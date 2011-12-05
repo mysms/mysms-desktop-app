@@ -1,0 +1,8 @@
+[Global]
+IconName=mysms
+Comment=mysms App
+
+[Event/newMessage]
+Name=New message received
+Comment=You have received a new message
+Action=Popup

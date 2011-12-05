@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/resource">
+        <file alias="icon.png">resource/icon.png</file>
+        <file alias="icon-1.png">resource/icon-1.png</file>
+        <file alias="icon-2.png">resource/icon-2.png</file>
+        <file alias="icon-3.png">resource/icon-3.png</file>
+        <file alias="icon-4.png">resource/icon-4.png</file>
+        <file alias="icon-5.png">resource/icon-5.png</file>
+        <file alias="icon-6.png">resource/icon-6.png</file>
+        <file alias="icon-7.png">resource/icon-7.png</file>
+        <file alias="icon-8.png">resource/icon-8.png</file>
+        <file alias="icon-9.png">resource/icon-9.png</file>
+    </qresource>
+</RCC>
