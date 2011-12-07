@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
 
-    m_icon = QIcon(":/resource/icon.png");
+	m_icon = QIcon(":/resource/icon.png");
 
     QWidget::setWindowIcon(m_icon);
     setWindowTitle("mysms App");
@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_webview.settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
     m_webview.settings()->setAttribute(QWebSettings::SiteSpecificQuirksEnabled, false);
     m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::PluginsEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
     QWebSettings::enablePersistentStorage();
 
     m_webview.setPage(new WebPage());
