@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** mysms App - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
-** Copyright (C) 2011 sms.at mobile internet services gmbh
+** mysms - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
+** Copyright (C) 2013 Up To Eleven
 ** All rights reserved.
 **
 **
@@ -21,6 +21,7 @@
 
 #include "kdenotification.h"
 #include "mainwindow.h"
+#include "logger.h"
 
 #if defined (USE_KDE)
 	#include <knotification.h>
@@ -30,6 +31,9 @@
 KdeNotification::KdeNotification(const QString &imageUrl, const QString &title, const QString &body, QObject *parent)
     : QObject(parent), m_imageUrl(imageUrl), m_title(title), m_body(body)
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
+
 	if (!imageUrl.isNull()) {
 		qDebug() << "load image: " << m_imageUrl;
 		m_networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(m_imageUrl)));
@@ -40,10 +44,12 @@ KdeNotification::KdeNotification(const QString &imageUrl, const QString &title, 
 }
 
 KdeNotification::~KdeNotification() {
+    Logger::log_message(QString("FUNC_COMPI"));
 	qDebug() << "destroy";
 }
 
 void KdeNotification::downloadFinished() {
+    Logger::log_message(QString("FUNC_COMPI"));
 
 	if (m_networkReply->error() != QNetworkReply::NoError) {
 	    qDebug() << "Error in" << m_networkReply->url() << ":" << m_networkReply->errorString();
@@ -64,6 +70,8 @@ void KdeNotification::downloadFinished() {
 }
 
 void KdeNotification::show() {
+    Logger::log_message(QString("FUNC_COMPI"));
+
 #if defined (USE_KDE)
 	KNotification *notification = new KNotification("newMessage");
 	notification->setText(QString("<b>%1</b>\n%2").arg(m_title).arg(m_body));

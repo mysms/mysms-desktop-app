@@ -47,8 +47,10 @@
 
 #include "qtsingleapplication.h"
 #include "qtlocalpeer.h"
-#include <QtGui/QWidget>
-#include <QtGui/QMessageBox>
+#include "logger.h"
+
+#include <QWidget>
+#include <QMessageBox>
 
 
 /*!
@@ -142,6 +144,8 @@
 
 void QtSingleApplication::sysInit(const QString &appId)
 {
+    Logger::log_message(QString(__func__));
+
     actWin = 0;
     peer = new QtLocalPeer(this, appId);
     connect(peer, SIGNAL(messageReceived(const QString&)), SIGNAL(messageReceived(const QString&)));
@@ -161,6 +165,8 @@ void QtSingleApplication::sysInit(const QString &appId)
 QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled)
     : QApplication(argc, argv, GUIenabled)
 {
+    Logger::log_message(QString(__func__));
+
     sysInit();
 }
 
@@ -174,6 +180,8 @@ QtSingleApplication::QtSingleApplication(int &argc, char **argv, bool GUIenabled
 QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char **argv)
     : QApplication(argc, argv)
 {
+    Logger::log_message(QString(__func__));
+
     sysInit(appId);
 }
 
@@ -182,12 +190,14 @@ QtSingleApplication::QtSingleApplication(const QString &appId, int &argc, char *
     Creates a QtSingleApplication object. The application identifier
     will be QCoreApplication::applicationFilePath(). \a argc, \a
     argv, and \a type are passed on to the QAppliation constructor.
-*/
+
+
 QtSingleApplication::QtSingleApplication(int &argc, char **argv, Type type)
     : QApplication(argc, argv, type)
 {
     sysInit();
 }
+*/
 
 
 #if defined(Q_WS_X11)
@@ -244,6 +254,8 @@ QtSingleApplication::QtSingleApplication(Display* dpy, const QString &appId, int
 
 bool QtSingleApplication::isRunning()
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
     return peer->isClient();
 }
 
@@ -263,6 +275,8 @@ bool QtSingleApplication::isRunning()
 */
 bool QtSingleApplication::sendMessage(const QString &message, int timeout)
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
     return peer->sendMessage(message, timeout);
 }
 
@@ -273,6 +287,8 @@ bool QtSingleApplication::sendMessage(const QString &message, int timeout)
 */
 QString QtSingleApplication::id() const
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
     return peer->applicationId();
 }
 
@@ -291,6 +307,8 @@ QString QtSingleApplication::id() const
 
 void QtSingleApplication::setActivationWindow(QWidget* aw, bool activateOnMessage)
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
     actWin = aw;
     if (activateOnMessage)
         connect(peer, SIGNAL(messageReceived(const QString&)), this, SLOT(activateWindow()));
@@ -307,6 +325,8 @@ void QtSingleApplication::setActivationWindow(QWidget* aw, bool activateOnMessag
 */
 QWidget* QtSingleApplication::activationWindow() const
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
     return actWin;
 }
 
@@ -327,6 +347,8 @@ QWidget* QtSingleApplication::activationWindow() const
 */
 void QtSingleApplication::activateWindow()
 {
+    Logger::log_message(QString("FUNC_COMPI"));
+
     if (actWin) {
         actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
         actWin->raise();

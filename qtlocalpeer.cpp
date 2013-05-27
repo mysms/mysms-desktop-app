@@ -44,8 +44,10 @@
 ** 
 ****************************************************************************/
 
-
 #include "qtlocalpeer.h"
+#include "logger.h"
+#include "qtlockedfile.h"
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QTime>
 
@@ -59,20 +61,12 @@ static PProcessIdToSessionId pProcessIdToSessionId = 0;
 #include <time.h>
 #endif
 
-namespace QtLP_Private {
-#include "qtlockedfile.cpp"
-#if defined(Q_OS_WIN)
-#include "qtlockedfile_win.cpp"
-#else
-#include "qtlockedfile_unix.cpp"
-#endif
-}
-
 const char* QtLocalPeer::ack = "ack";
 
-QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId)
-    : QObject(parent), id(appId)
+QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId) : QObject(parent), id(appId)
 {
+    Logger::log_message(QString(__func__));
+
     QString prefix = id;
     if (id.isEmpty()) {
         id = QCoreApplication::applicationFilePath();
@@ -115,10 +109,12 @@ QtLocalPeer::QtLocalPeer(QObject* parent, const QString &appId)
 
 bool QtLocalPeer::isClient()
 {
+    Logger::log_message(QString(__func__));
+
     if (lockFile.isLocked())
         return false;
 
-    if (!lockFile.lock(QtLP_Private::QtLockedFile::WriteLock, false))
+    if (!lockFile.lock(QtLockedFile::WriteLock, false))
         return true;
 
     bool res = server->listen(socketName);
@@ -138,6 +134,8 @@ bool QtLocalPeer::isClient()
 
 bool QtLocalPeer::sendMessage(const QString &message, int timeout)
 {
+    Logger::log_message(QString(__func__));
+
     if (!isClient())
         return false;
 
@@ -169,9 +167,10 @@ bool QtLocalPeer::sendMessage(const QString &message, int timeout)
     return res;
 }
 
-
 void QtLocalPeer::receiveConnection()
 {
+    Logger::log_message(QString(__func__));
+
     QLocalSocket* socket = server->nextPendingConnection();
     if (!socket)
         return;

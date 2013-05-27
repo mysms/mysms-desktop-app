@@ -47,6 +47,8 @@
 #ifndef QTLOCKEDFILE_H
 #define QTLOCKEDFILE_H
 
+
+
 #include <QtCore/QFile>
 #ifdef Q_OS_WIN
 #include <QtCore/QVector>
@@ -68,8 +70,12 @@
 #  define QT_QTLOCKEDFILE_EXPORT
 #endif
 
-class QT_QTLOCKEDFILE_EXPORT QtLockedFile : public QFile
+
+
+
+class /* QT_QTLOCKEDFILE_EXPORT  */ QtLockedFile : public QFile
 {
+
 public:
     enum LockMode { NoLock = 0, ReadLock, WriteLock };
 
@@ -97,5 +103,7 @@ private:
 #endif
     LockMode m_lock_mode;
 };
+
+
 
 #endif

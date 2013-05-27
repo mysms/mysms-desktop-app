@@ -10,5 +10,12 @@
         <file alias="icon-7.png">resource/icon-7.png</file>
         <file alias="icon-8.png">resource/icon-8.png</file>
         <file alias="icon-9.png">resource/icon-9.png</file>
+        <file alias="play.png">resource/play.png</file>
+        <file alias="close.png">resource/close.png</file>
+        <file alias="read.png">resource/read.png</file>
+        <file alias="del.png">resource/del.png</file>
+        <file alias="Logo.png">resource/Logo.png</file>
+        <file alias="closeWhite.png">resource/closeWhite.png</file>
+        <file alias="update.png">resource/update.png</file>
     </qresource>
 </RCC>

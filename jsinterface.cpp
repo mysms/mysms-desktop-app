@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** mysms App - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
-** Copyright (C) 2011 sms.at mobile internet services gmbh
+** mysms - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
+** Copyright (C) 2013 Up To Eleven
 ** All rights reserved.
 **
 **
@@ -21,40 +21,70 @@
 
 #include "jsinterface.h"
 #include "mainwindow.h"
+#include "logger.h"
+
+#include <QDateTime>
 
 #if defined (USE_KDE)
 	#include "kdenotification.h"
 #endif
 
-JsInterface::JsInterface(QObject *parent)
-    : QObject(parent)
+JsInterface::JsInterface(NotificationPopupManager * pnotificationPopupManager,  NetworkCookieJar * pnetworkCookieChar, QObject *parent) : QObject(parent)
+{   
+    Logger::log_message(QString(__func__));
+
+    notificationPopupManager = pnotificationPopupManager;
+    networkCookieJar = pnetworkCookieChar;
+}
+
+JsInterface::~JsInterface()
 {
+    Logger::log_message(QString(__func__));
 }
 
-void JsInterface::showNotification(const QString &imageUrl, const QString &title, const QString &body) {
+void JsInterface::showNotification(const QString & imageUrl, const QString &title, const QString &body, double eventId, int messageId, QString address, double date)
+{
+    Logger::log_message(QString(__func__));
 
-#if defined (USE_KDE)
-	qDebug() << "show kde notification";
+    bool isGroupMessage = false;
+
+    if ((address != NULL) && (address.length() > 0) && (address[0] == '#'))
+        isGroupMessage = true;
+
+    QDateTime dateVal = QDateTime::fromMSecsSinceEpoch (  date );
+
+#if defined (USE_KDE)	
 	KdeNotification *notification = new KdeNotification(imageUrl, title, body);
-#else
-	MainWindow::instance()->systemTrayIcon()->showMessage(title, body, QSystemTrayIcon::NoIcon, 15000);
+#else    
+    notificationPopupManager->newMessageReceived(imageUrl, title, body, isGroupMessage, messageId, address, dateVal);
+    // MainWindow::instance()->systemTrayIcon()->showMessage(title, body, QSystemTrayIcon::NoIcon, 15000);
 #endif
-
 }
 
-void JsInterface::setBadgeCounter(const int badgeCounter) {
-    QIcon *icon;
-    if (badgeCounter > 9) {
-        icon = new QIcon(":/resource/icon-9.png");
-    } else if (badgeCounter == 0) {
-        icon = new QIcon(":/resource/icon.png");
-    } else {
-        icon = new QIcon(QString(":/resource/icon-%1.png").arg(badgeCounter));
-    }
-    MainWindow::instance()->systemTrayIcon()->setIcon(*icon);
-    delete icon;
+void JsInterface::setBadgeCounter(const int badgeCounter)
+{
+    Logger::log_message(QString(__func__));
+
+    notificationPopupManager->setBadgeCounter(badgeCounter);
 }
 
-void JsInterface::openExternalUrl(const QString &url) {
+void JsInterface::openExternalUrl(const QString &url)
+{
+    Logger::log_message(QString(__func__));
+
     QDesktopServices::openUrl(QUrl::fromEncoded(url.toLocal8Bit()));
+}
+
+void JsInterface::invalidateOAuthLogin()
+{
+    Logger::log_message(QString(__func__));
+
+    networkCookieJar->removeAllCookies();
+}
+
+void JsInterface::openSettings()
+{
+    Logger::log_message(QString(__func__));
+
+    MainWindow::instance()->settings();
 }

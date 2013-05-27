@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** mysms App - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
-** Copyright (C) 2011 sms.at mobile internet services gmbh
+** mysms - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
+** Copyright (C) 2013 Up To Eleven
 ** All rights reserved.
 **
 **
@@ -18,12 +18,33 @@
 ** if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 **
 ****************************************************************************/
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "jsinterface.h"
+#include "usersettings.h"
+#include "tabdialog.h"
+#include "updatedialog.h"
+#include "notificationpopup.h"
+#include "notificationpopupmanager.h"
+#include "webview.h"
+#include "networkcookiejar.h"
+
 #include <QtGui>
 #include <QWebView>
+#include <QUrl>
 #include <QWebPage>
+#include <QWebInspector>
+#include <QTimer>
+
+#ifdef QT5
+    #include <QtWidgets/QtWidgets>
+#else
+    #include <QWidget>
+#endif
+
+#include <QtCore>
 
 class MainWindow : public QMainWindow
 {
@@ -31,13 +52,26 @@ class MainWindow : public QMainWindow
 
 public:
     static MainWindow *instance();
-    ~MainWindow();
+    static void drop();
     QNetworkAccessManager *networkAccessManager();
     QSystemTrayIcon *systemTrayIcon();
+
+    WebView m_webview;
+
+    bool isWindowClosed();
+    void openWindow();
+    void closeWindow(QCloseEvent *event);
+    void loadPage(QString address = "");
+    void checkVersion();
+    void updateBadgeCounter(QIcon icon);
 
 protected:
     void changeEvent(QEvent *event);
     void closeEvent(QCloseEvent *event);
+
+
+public slots:
+    void settings();
 
 protected slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -46,29 +80,48 @@ protected slots:
     void createActions();
     void createTrayIcon();
     void quit();
+    void refresh();    
+    void fileReplyFinished(QNetworkReply*);
+    void singleClick();
 
-private:
+private:    
     static MainWindow *m_instance;
     explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
 
     QSettings m_settings;
-    QWebView m_webview;
     QIcon m_icon;
-
     Qt::WindowStates m_savedWindowState;
+
+    QTimer m_ClickTimer;
     QAction *m_quitAction;
-    QSystemTrayIcon *m_trayIcon;
-    QMenu *m_trayIconMenu;
+    QAction *m_refreshAction;
+    QAction *m_settingsAction;
+
+    QSystemTrayIcon * m_trayIcon;
+    QMenu *           m_trayIconMenu;
+    TabDialog  *       m_tabdialog;
+    userSettings *    m_usersettings;
+
+    NotificationPopupManager * m_notificationPopupManager;
+    updateDialog *    m_updatedialog;
+
+    QNetworkAccessManager m_genPurposeNetworkManager;
+    QWebInspector *   m_inspector;
+    NetworkCookieJar * m_networkCookieJar;
+    JsInterface * m_jsInterface;
 
 private slots:
     void addJsObjects();
-
 };
 
 class WebPage : public QWebPage {
     Q_OBJECT
 protected slots:
     QString userAgentForUrl(const QUrl& url) const;
+
+
+
 };
 
 #endif // MAINWINDOW_H

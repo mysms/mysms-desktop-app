@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** mysms App - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
-** Copyright (C) 2011 sms.at mobile internet services gmbh
+** mysms - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
+** Copyright (C) 2013 Up To Eleven
 ** All rights reserved.
 **
 **
@@ -21,24 +21,55 @@
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
+#include "logger.h"
+#include "usersettings.h"
+#include "globalSettings.h"
 
 #include <QGraphicsView>
 #include <QGraphicsWebView>
+#include <QTranslator>
+#include <QString>
+#include <QApplication>
+#include <QLocale>
 
 int main(int argc, char *argv[])
-{
-    QtSingleApplication::setGraphicsSystem("raster");
-    QtSingleApplication::setOrganizationName("sms.at");
-    QtSingleApplication::setApplicationName("mysms");
-    QtSingleApplication::setApplicationVersion("1.0.4");
+{    
+    Logger::open_file();
+    Logger::log_message(QString(__func__));
+
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+    QtSingleApplication::setGraphicsSystem(QLatin1String("raster"));
+#endif
+
+    QtSingleApplication::setOrganizationName(ORGANIZATION_NAME);
+    QtSingleApplication::setApplicationName(APPLICATION_NAME);
+    QtSingleApplication::setApplicationVersion(QString::number(VERSION_MAJOR) + "." + QString::number(VERSION_MIDDLE) + "." + QString::number(VERSION_MINOR));
     QtSingleApplication app(argc, argv);
 
     if (app.isRunning()) {
         return 0;
     }
 
+    QTranslator translator;
+    QString systemLanguage = QLocale::languageToString(QLocale::system().language());
+
+    if (systemLanguage == LANGUAGE_GERMAN)
+    {
+        translator.load(LANGUAGE_GERMAN_FILE, QApplication::applicationDirPath());
+        app.installTranslator(&translator);
+    }
+
     MainWindow *w = MainWindow::instance();
     app.setActivationWindow(w);
-    w->show();
-    return app.exec();
+
+    if ((argc == 2) && (QString(argv[1]) == QString("min")))
+        w->closeWindow(NULL);
+    else
+        w->show();
+
+    w->checkVersion();
+
+    int res = app.exec();
+    w->drop();
+    return res;
 }

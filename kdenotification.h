@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** mysms App - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
-** Copyright (C) 2011 sms.at mobile internet services gmbh
+** mysms - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
+** Copyright (C) 2013 Up To Eleven
 ** All rights reserved.
 **
 **

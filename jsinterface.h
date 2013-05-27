@@ -1,7 +1,7 @@
 /****************************************************************************
 **
-** mysms App - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
-** Copyright (C) 2011 sms.at mobile internet services gmbh
+** mysms - Send & receive all your SMS on your Notebook, PC or tablet – like on your smartphone
+** Copyright (C) 2013 Up To Eleven
 ** All rights reserved.
 **
 **
@@ -22,18 +22,27 @@
 #ifndef JSINTERFACE_H
 #define JSINTERFACE_H
 
+#include "notificationpopupmanager.h"
+#include "networkcookiejar.h"
+
 #include <QtGui>
 
 class JsInterface : public QObject
  {
      Q_OBJECT
  public:
-     JsInterface(QObject *parent=0);
+     JsInterface(NotificationPopupManager * pnotificationPopupManager, NetworkCookieJar * pnetworkCookieChar, QObject *parent=0);
+     ~JsInterface();
+
+ private:
+     NotificationPopupManager * notificationPopupManager;
+     NetworkCookieJar * networkCookieJar;
 
  public slots:
-     void showNotification(const QString &imageUrl, const QString &title, const QString &body);
+     void showNotification(const QString & imageUrl, const QString &title, const QString &body, const double eventId = 0, const int messageId = 0, QString address = "", double date = 0);
      void setBadgeCounter(const int badgeCounter);
-     void openExternalUrl(const QString &url);
-
+     void openExternalUrl(const QString &url);    
+     void openSettings();
+     void invalidateOAuthLogin();
  };
 #endif // JSINTERFACE_H
