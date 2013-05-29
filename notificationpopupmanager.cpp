@@ -45,8 +45,8 @@ NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(P
     m_width  = 400;
     m_height = 80;
 
-    m_startX = clientRect.width() - m_width;
-    m_startY = clientRect.height() - m_height;
+    m_startX = clientRect.left() + clientRect.width() - m_width;
+    m_startY = clientRect.top() + clientRect.height() - m_height;
     m_deltaY = 0;
 
     m_storedBadgeCounter = 0;
@@ -116,7 +116,6 @@ void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, in
     }
 
     m_deltaY = widgetPos * 110;
-    //widget->setGeometry(m_startX, m_startY - m_deltaY, m_width, m_height);
     QDesktopWidget* desktopWidget = QApplication::desktop();
     widget->setGeometry(m_startX, desktopWidget->availableGeometry().height() - widget->sizeHint().height() - heightOffset , m_width, widget->sizeHint().height());
 }
@@ -151,7 +150,7 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
     currentUserSettings = userSettings::getInstance()->GetUserSettingsData();
 
-    int playSoundIndex = getSoundNeeded(((notificationWidgetQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed() );
+    int playSoundIndex = getSoundNeeded(((notificationWidgetQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
 
     if (playSoundIndex != no_sound)
     {
