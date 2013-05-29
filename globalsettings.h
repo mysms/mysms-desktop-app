@@ -30,9 +30,6 @@
 #define ORGANIZATION_NAME   "Up To Eleven"
 #define APPLICATION_NAME    "mysms"
 
-#define LANGUAGE_GERMAN     "German"
-#define LANGUAGE_GERMAN_FILE "mysms_de"
-
 //////////////////// System definitions ////////////////////
 #define LIVE_SYSTEM
 //#define WEBINSPECTOR
