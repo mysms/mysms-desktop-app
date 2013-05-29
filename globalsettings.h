@@ -27,7 +27,7 @@
 #define VERSION_MIDDLE      0
 #define VERSION_MINOR       0
 
-#define ORGANIZATION_NAME   "Up To Eleven"
+#define ORGANIZATION_NAME   "sms.at"
 #define APPLICATION_NAME    "mysms"
 
 //////////////////// System definitions ////////////////////
