@@ -19,7 +19,7 @@
 **
 ****************************************************************************/
 
-#include "globalSettings.h"
+#include "globalsettings.h"
 #include "logger.h"
 
 static QString logFileName = LOGFILE_PATH;

@@ -30,7 +30,7 @@
 #include "mainwindow.h"
 #include "logger.h"
 #include "soundselector.h"
-#include "globalSettings.h"
+#include "globalsettings.h"
 
 NotificationSummaryWidget::~NotificationSummaryWidget()
 {}

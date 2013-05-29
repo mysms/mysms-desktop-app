@@ -25,7 +25,7 @@
 #include "qnetworkaccessmanagercustom.h"
 #include "notificationpopupmanager.h"
 #include "updatedialog.h"
-#include "globalSettings.h"
+#include "globalsettings.h"
 
 #include <QApplication>
 #include <QDesktopWidget>

@@ -23,7 +23,7 @@
 #include "qtsingleapplication.h"
 #include "logger.h"
 #include "usersettings.h"
-#include "globalSettings.h"
+#include "globalsettings.h"
 
 #include <QGraphicsView>
 #include <QGraphicsWebView>

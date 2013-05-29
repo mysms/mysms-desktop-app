@@ -20,7 +20,7 @@
 ****************************************************************************/
 
 #include "updatedialog.h"
-#include "globalSettings.h"
+#include "globalsettings.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>

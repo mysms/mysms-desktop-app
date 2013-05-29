@@ -28,7 +28,7 @@
 
 #include "mainwindow.h"
 #include "logger.h"
-#include "globalSettings.h"
+#include "globalsettings.h"
 #include "soundselector.h"
 
 NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(POPUP_NUMBER)
