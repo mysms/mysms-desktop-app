@@ -51,13 +51,8 @@ int main(int argc, char *argv[])
     }
 
     QTranslator translator;
-    QString systemLanguage = QLocale::languageToString(QLocale::system().language());
-
-    if (systemLanguage == LANGUAGE_GERMAN)
-    {
-        translator.load(LANGUAGE_GERMAN_FILE, QApplication::applicationDirPath());
+    if (translator.load("mysms", ":/translation"))
         app.installTranslator(&translator);
-    }
 
     MainWindow *w = MainWindow::instance();
     app.setActivationWindow(w);

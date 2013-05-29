@@ -20,4 +20,7 @@
         <file alias="opensans.ttf">resource/opensans.ttf</file>
         <file alias="opensans-bold.ttf">resource/opensans-bold.ttf</file>
     </qresource>
+    <qresource prefix="/translation" lang="de">
+        <file alias="mysms">translation/mysms_de.qm</file>
+    </qresource>
 </RCC>

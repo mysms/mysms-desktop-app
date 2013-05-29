@@ -49,7 +49,7 @@ HEADERS += networkcookiejar.h \
 FORMS +=
 OTHER_FILES += 
 RESOURCES += mysms.qrc
-TRANSLATIONS = mysms_de.ts
+TRANSLATIONS = translation/mysms_de.ts
 
 # Windows resource file
 win32:RC_FILE = mysms.rc
