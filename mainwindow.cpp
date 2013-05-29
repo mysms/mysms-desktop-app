@@ -132,6 +132,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     QFontDatabase::addApplicationFont(":/resource/opensans.ttf");
     QFontDatabase::addApplicationFont(":/resource/opensans-bold.ttf");
+    QApplication::font().setFamily("Open Sans");
 
     QWidget::setWindowIcon(m_icon);
     setWindowTitle(tr("mysms"));
