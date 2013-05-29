@@ -187,7 +187,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_webview.settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
 #if defined(Q_OS_WIN)
-    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
+    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, false);
 #else
     m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
 #endif
