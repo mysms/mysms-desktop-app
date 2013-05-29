@@ -30,16 +30,8 @@
 #include <QMessageBox>
 #include <QApplication>
 
-QNetworkAccessManagerCustom::QNetworkAccessManagerCustom()
+QNetworkAccessManagerCustom::QNetworkAccessManagerCustom(QObject *parent) : QNetworkAccessManager(parent)
 {}
-
-QNetworkAccessManagerCustom::QNetworkAccessManagerCustom(QNetworkAccessManager *oldManager, QObject *parent) : QNetworkAccessManager(parent)
-{
-    setCache(oldManager->cache());
-    setCookieJar(oldManager->cookieJar());
-    setProxy(oldManager->proxy());
-    setProxyFactory(oldManager->proxyFactory());
-}
 
 QNetworkReply * QNetworkAccessManagerCustom::createRequest ( Operation op, const QNetworkRequest & req, QIODevice * outgoingData)
 {
@@ -57,5 +49,9 @@ QNetworkReply * QNetworkAccessManagerCustom::createRequest ( Operation op, const
         }
     }
 
-    return QNetworkAccessManager::createRequest (op, req, outgoingData);
+    QNetworkRequest request = req;
+    if (request.attribute(QNetworkRequest::CacheLoadControlAttribute) == QNetworkRequest::PreferNetwork)
+        request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
+
+    return QNetworkAccessManager::createRequest (op, request, outgoingData);
 }

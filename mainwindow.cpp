@@ -37,6 +37,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 
+#include <QNetworkDiskCache>
 #include <QNetworkProxyQuery>
 #include <QDesktopServices>
 #include <QDesktopWidget>
@@ -197,12 +198,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_webview.settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
     m_webview.setContextMenuPolicy(Qt::NoContextMenu);
 
-    m_networkCookieJar = new NetworkCookieJar();
-
-    m_webview.setPage(new WebPage());        
-    m_webview.page()->networkAccessManager()->setCookieJar(m_networkCookieJar);
+    QNetworkAccessManagerCustom *networkAccessManager = new QNetworkAccessManagerCustom(this);
+    m_webview.page()->setNetworkAccessManager(networkAccessManager);
     m_webview.page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 
+    QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
+    diskCache->setCacheDirectory(QDesktopServices::storageLocation(QDesktopServices::CacheLocation));
+    networkAccessManager->setCache(diskCache);
+
+
+    m_networkCookieJar = new NetworkCookieJar();
+    networkAccessManager->setCookieJar(m_networkCookieJar);
 
     QNetworkProxyQuery npq(QUrl("http://www.google.com"));
     QList<QNetworkProxy> listOfProxies = QNetworkProxyFactory::systemProxyForQuery(npq);   
@@ -221,11 +227,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(m_webview.page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(addJsObjects()));
     connect(m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));    
     connect(&m_ClickTimer, SIGNAL(timeout()), this, SLOT(singleClick()));
-
-    QNetworkAccessManager *oldManager = m_webview.page()->networkAccessManager();
-    QNetworkAccessManagerCustom *newManager = new QNetworkAccessManagerCustom(oldManager, this);
-    m_webview.page()->setNetworkAccessManager(newManager);  
-
 
 #ifdef WEBINSPECTOR
     m_webview.page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
@@ -353,7 +354,6 @@ void MainWindow::closeWindow(QCloseEvent *event)
     if (event != NULL)
     {
         event->ignore();                       
-        //QMainWindow::closeEvent(event);
     }
 }
 
@@ -544,8 +544,6 @@ QString WebPage::userAgentForUrl(const QUrl &url ) const
 
     if (url.toString().indexOf("analytics") >= 0)
         return ua.replace(QRegExp("^\\S*\\s(\\([^\\)]*\\)).*$"), "mysms/" + QtSingleApplication::applicationVersion() + " \\1" );
-    else
-        return ua;
 
     return ua;
 

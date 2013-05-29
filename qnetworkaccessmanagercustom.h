@@ -29,8 +29,7 @@ class QNetworkAccessManagerCustom : public QNetworkAccessManager
     Q_OBJECT
 
 public:
-    QNetworkAccessManagerCustom();
-    QNetworkAccessManagerCustom(QNetworkAccessManager *oldManager, QObject *parent = 0);
+    QNetworkAccessManagerCustom(QObject *parent = 0);
 
 protected:
     virtual QNetworkReply *  createRequest ( Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0 );
