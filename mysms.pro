@@ -46,8 +46,8 @@ HEADERS += networkcookiejar.h \
     updatedialog.h \
     soundselector.h \
     filedownloader.h \
-    globalSettings.h \
-    webview.h
+    webview.h \
+    globalsettings.h
 FORMS +=
 OTHER_FILES += 
 RESOURCES += mysms.qrc
