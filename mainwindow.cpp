@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDesktopServices>
+#include <QFontDatabase>
 #include <QMessageBox>
 #include <QWebFrame>
 #include <QWindowStateChangeEvent>
@@ -127,6 +128,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_tabdialog = new TabDialog;
 
     m_icon = QIcon(":/resource/icon.png");
+
+    QFontDatabase::addApplicationFont(":/resource/opensans.ttf");
+    QFontDatabase::addApplicationFont(":/resource/opensans-bold.ttf");
 
     QWidget::setWindowIcon(m_icon);
     setWindowTitle(tr("mysms"));

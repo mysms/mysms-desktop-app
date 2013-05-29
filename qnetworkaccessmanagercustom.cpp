@@ -47,10 +47,11 @@ QNetworkReply * QNetworkAccessManagerCustom::createRequest ( Operation op, const
     {
         QString path = req.url().toString();
 
-        if (path.contains(QString("fonts.googleapis.com")))     // due to problem with local font - overwrite user agent
+        // qtwebkit doesn't support font-face correctly - so return empty request
+        if (path.contains(QString("fonts.googleapis.com")))
         {
             QNetworkRequest request(req);
-            request.setUrl(QUrl("file:///" + QApplication::applicationDirPath() + QString("\\fonts\\fontGoogle.css")));
+            request.setUrl(QUrl("data:text/css,"));
 
             return QNetworkAccessManager::createRequest (op, request, outgoingData);
         }
