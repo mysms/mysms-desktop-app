@@ -34,7 +34,7 @@
 #define LANGUAGE_GERMAN_FILE "mysms_de"
 
 //////////////////// System definitions ////////////////////
-#define LIFE_SYSTEM
+#define LIVE_SYSTEM
 //#define WEBINSPECTOR
 //#define CACHE_CLEAR
 //#define QT5
@@ -50,7 +50,7 @@
 
 //////////////////// General definitions //////////////////
 
-#ifdef LIFE_SYSTEM
+#ifdef LIVE_SYSTEM
     #define SERVER_URL "https://app.mysms.com"
 #else
     #define SERVER_URL "http://app.mysms.gpa.sms.co.at"
