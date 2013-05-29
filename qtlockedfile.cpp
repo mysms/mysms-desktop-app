@@ -1,69 +1,88 @@
 /****************************************************************************
-** 
-** Copyright (c) 2009 Nokia Corporation and/or its subsidiary(-ies).
-** All rights reserved.
-** Contact: Nokia Corporation (qt-info@nokia.com)
-** 
-** This file is part of a Qt Solutions component.
 **
-** Commercial Usage  
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Solutions Commercial License Agreement provided
-** with the Software or, alternatively, in accordance with the terms
-** contained in a written agreement between you and Nokia.
-** 
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-** 
-** In addition, as a special exception, Nokia gives you certain
-** additional rights. These rights are described in the Nokia Qt LGPL
-** Exception version 1.1, included in the file LGPL_EXCEPTION.txt in this
-** package.
-** 
-** GNU General Public License Usage 
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-** 
-** Please note Third Party Software included with Qt Solutions may impose
-** additional restrictions and it is the user's responsibility to ensure
-** that they have met the licensing requirements of the GPL, LGPL, or Qt
-** Solutions Commercial license and the relevant license of the Third
-** Party Software they are using.
-** 
-** If you are unsure which license is appropriate for your use, please
-** contact Nokia at qt-info@nokia.com.
-** 
+** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the Qt Solutions component.
+**
+** $QT_BEGIN_LICENSE:BSD$
+** You may use this file under the terms of the BSD license as follows:
+**
+** "Redistribution and use in source and binary forms, with or without
+** modification, are permitted provided that the following conditions are
+** met:
+**   * Redistributions of source code must retain the above copyright
+**     notice, this list of conditions and the following disclaimer.
+**   * Redistributions in binary form must reproduce the above copyright
+**     notice, this list of conditions and the following disclaimer in
+**     the documentation and/or other materials provided with the
+**     distribution.
+**   * Neither the name of Digia Plc and its Subsidiary(-ies) nor the names
+**     of its contributors may be used to endorse or promote products derived
+**     from this software without specific prior written permission.
+**
+**
+** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
+**
+** $QT_END_LICENSE$
+**
 ****************************************************************************/
 
 #include "qtlockedfile.h"
-#include "logger.h"
 
-#if defined(Q_OS_WIN)
-    #include <qt_windows.h>
-    #include <QtCore/QFileInfo>
+/*!
+    \class QtLockedFile
 
-    #define MUTEX_PREFIX "QtLockedFile mutex "
-    #define MAX_READERS MAXIMUM_WAIT_OBJECTS
-#else
-    #include <string.h>
-    #include <errno.h>
-    #include <unistd.h>
-    #include <fcntl.h>
-#endif
+    \brief The QtLockedFile class extends QFile with advisory locking
+    functions.
 
-QtLockedFile::QtLockedFile()    : QFile()
+    A file may be locked in read or write mode. Multiple instances of
+    \e QtLockedFile, created in multiple processes running on the same
+    machine, may have a file locked in read mode. Exactly one instance
+    may have it locked in write mode. A read and a write lock cannot
+    exist simultaneously on the same file.
+
+    The file locks are advisory. This means that nothing prevents
+    another process from manipulating a locked file using QFile or
+    file system functions offered by the OS. Serialization is only
+    guaranteed if all processes that access the file use
+    QLockedFile. Also, while holding a lock on a file, a process
+    must not open the same file again (through any API), or locks
+    can be unexpectedly lost.
+
+    The lock provided by an instance of \e QtLockedFile is released
+    whenever the program terminates. This is true even when the
+    program crashes and no destructors are called.
+*/
+
+/*! \enum QtLockedFile::LockMode
+
+    This enum describes the available lock modes.
+
+    \value ReadLock A read lock.
+    \value WriteLock A write lock.
+    \value NoLock Neither a read lock nor a write lock.
+*/
+
+/*!
+    Constructs an unlocked \e QtLockedFile object. This constructor
+    behaves in the same way as \e QFile::QFile().
+
+    \sa QFile::QFile()
+*/
+QtLockedFile::QtLockedFile()
+    : QFile()
 {
-    Logger::log_message(QString(__func__));
-
 #ifdef Q_OS_WIN
     wmutex = 0;
     rmutex = 0;
@@ -71,10 +90,16 @@ QtLockedFile::QtLockedFile()    : QFile()
     m_lock_mode = NoLock;
 }
 
-QtLockedFile::QtLockedFile(const QString &name) : QFile(name)
-{
-    Logger::log_message(QString(__func__));
+/*!
+    Constructs an unlocked QtLockedFile object with file \a name. This
+    constructor behaves in the same way as \e QFile::QFile(const
+    QString&).
 
+    \sa QFile::QFile()
+*/
+QtLockedFile::QtLockedFile(const QString &name)
+    : QFile(name)
+{
 #ifdef Q_OS_WIN
     wmutex = 0;
     rmutex = 0;
@@ -82,10 +107,21 @@ QtLockedFile::QtLockedFile(const QString &name) : QFile(name)
     m_lock_mode = NoLock;
 }
 
+/*!
+  Opens the file in OpenMode \a mode.
+
+  This is identical to QFile::open(), with the one exception that the
+  Truncate mode flag is disallowed. Truncation would conflict with the
+  advisory file locking, since the file would be modified before the
+  write lock is obtained. If truncation is required, use resize(0)
+  after obtaining the write lock.
+
+  Returns true if successful; otherwise false.
+
+  \sa QFile::open(), QFile::resize()
+*/
 bool QtLockedFile::open(OpenMode mode)
 {
-    Logger::log_message(QString(__func__));
-
     if (mode & QIODevice::Truncate) {
         qWarning("QtLockedFile::open(): Truncate mode not allowed.");
         return false;
@@ -93,272 +129,65 @@ bool QtLockedFile::open(OpenMode mode)
     return QFile::open(mode);
 }
 
+/*!
+    Returns \e true if this object has a in read or write lock;
+    otherwise returns \e false.
+
+    \sa lockMode()
+*/
 bool QtLockedFile::isLocked() const
 {
-    Logger::log_message(QString(__func__));
-
     return m_lock_mode != NoLock;
 }
 
+/*!
+    Returns the type of lock currently held by this object, or \e
+    QtLockedFile::NoLock.
+
+    \sa isLocked()
+*/
 QtLockedFile::LockMode QtLockedFile::lockMode() const
 {
-    Logger::log_message(QString(__func__));
-
     return m_lock_mode;
 }
 
-Qt::HANDLE QtLockedFile::getMutexHandle(int idx, bool doCreate)
-{
-    Logger::log_message(QString(__func__));
+/*!
+    \fn bool QtLockedFile::lock(LockMode mode, bool block = true)
 
-    if (mutexname.isEmpty()) {
-        QFileInfo fi(*this);
-        mutexname = QString::fromLatin1(MUTEX_PREFIX)
-                    + fi.absoluteFilePath().toLower();
-    }
-    QString mname(mutexname);
-    if (idx >= 0)
-        mname += QString::number(idx);
+    Obtains a lock of type \a mode. The file must be opened before it
+    can be locked.
 
-    Qt::HANDLE mutex;
-    if (doCreate) {
-            mutex = CreateMutexW(NULL, FALSE, (TCHAR*)mname.utf16());
+    If \a block is true, this function will block until the lock is
+    aquired. If \a block is false, this function returns \e false
+    immediately if the lock cannot be aquired.
 
-        //QT_WA( { mutex = CreateMutexW(NULL, FALSE, (TCHAR*)mname.utf16()); },
-        //       { mutex = CreateMutexA(NULL, FALSE, mname.toLocal8Bit().constData()); } );
-        if (!mutex) {
-            qErrnoWarning("QtLockedFile::lock(): CreateMutex failed");
-            return 0;
-        }
-    }
-    else {
-            mutex = OpenMutexW(SYNCHRONIZE | MUTEX_MODIFY_STATE, FALSE, (TCHAR*)mname.utf16());
+    If this object already has a lock of type \a mode, this function
+    returns \e true immediately. If this object has a lock of a
+    different type than \a mode, the lock is first released and then a
+    new lock is obtained.
 
+    This function returns \e true if, after it executes, the file is
+    locked by this object, and \e false otherwise.
 
-        //QT_WA( { mutex = OpenMutexW(SYNCHRONIZE | MUTEX_MODIFY_STATE, FALSE, (TCHAR*)mname.utf16()); },
-        //     { mutex = OpenMutexA(SYNCHRONIZE | MUTEX_MODIFY_STATE, FALSE, mname.toLocal8Bit().constData()); } );
+    \sa unlock(), isLocked(), lockMode()
+*/
 
-        if (!mutex) {
-            if (GetLastError() != ERROR_FILE_NOT_FOUND)
-                qErrnoWarning("QtLockedFile::lock(): OpenMutex failed");
-            return 0;
-        }
-    }
-    return mutex;
-}
+/*!
+    \fn bool QtLockedFile::unlock()
 
-bool QtLockedFile::waitMutex(Qt::HANDLE mutex, bool doBlock)
-{
-    Logger::log_message(QString(__func__));
+    Releases a lock.
 
-    Q_ASSERT(mutex);
-    DWORD res = WaitForSingleObject(mutex, doBlock ? INFINITE : 0);
-    switch (res) {
-    case WAIT_OBJECT_0:
-    case WAIT_ABANDONED:
-        return true;
-        break;
-    case WAIT_TIMEOUT:
-        break;
-    default:
-        qErrnoWarning("QtLockedFile::lock(): WaitForSingleObject failed");
-    }
-    return false;
-}
+    If the object has no lock, this function returns immediately.
 
+    This function returns \e true if, after it executes, the file is
+    not locked by this object, and \e false otherwise.
 
-#if defined(Q_OS_WIN)
+    \sa lock(), isLocked(), lockMode()
+*/
 
-bool QtLockedFile::lock(LockMode mode, bool block)
-{
-    Logger::log_message(QString(__func__));
+/*!
+    \fn QtLockedFile::~QtLockedFile()
 
-    if (!isOpen()) {
-        qWarning("QtLockedFile::lock(): file is not opened");
-        return false;
-    }
-
-    if (mode == NoLock)
-        return unlock();
-
-    if (mode == m_lock_mode)
-        return true;
-
-    if (m_lock_mode != NoLock)
-        unlock();
-
-    if (!wmutex && !(wmutex = getMutexHandle(-1, true)))
-        return false;
-
-    if (!waitMutex(wmutex, block))
-        return false;
-
-    if (mode == ReadLock) {
-        int idx = 0;
-        for (; idx < MAX_READERS; idx++) {
-            rmutex = getMutexHandle(idx, false);
-            if (!rmutex || waitMutex(rmutex, false))
-                break;
-            CloseHandle(rmutex);
-        }
-        bool ok = true;
-        if (idx >= MAX_READERS) {
-            qWarning("QtLockedFile::lock(): too many readers");
-            rmutex = 0;
-            ok = false;
-        }
-        else if (!rmutex) {
-            rmutex = getMutexHandle(idx, true);
-            if (!rmutex || !waitMutex(rmutex, false))
-                ok = false;
-        }
-        if (!ok && rmutex) {
-            CloseHandle(rmutex);
-            rmutex = 0;
-        }
-        ReleaseMutex(wmutex);
-        if (!ok)
-            return false;
-    }
-    else {
-        Q_ASSERT(rmutexes.isEmpty());
-        for (int i = 0; i < MAX_READERS; i++) {
-            Qt::HANDLE mutex = getMutexHandle(i, false);
-            if (mutex)
-                rmutexes.append(mutex);
-        }
-        if (rmutexes.size()) {
-            DWORD res = WaitForMultipleObjects(rmutexes.size(), rmutexes.constData(),
-                                               TRUE, block ? INFINITE : 0);
-            if (res != WAIT_OBJECT_0 && res != WAIT_ABANDONED) {
-                if (res != WAIT_TIMEOUT)
-                    qErrnoWarning("QtLockedFile::lock(): WaitForMultipleObjects failed");
-                m_lock_mode = WriteLock;  // trick unlock() to clean up - semiyucky
-                unlock();
-                return false;
-            }
-        }
-    }
-
-    m_lock_mode = mode;
-
-    return true;
-}
-
-bool QtLockedFile::unlock()
-{
-    Logger::log_message(QString(__func__));
-
-    if (!isOpen()) {
-        qWarning("QtLockedFile::unlock(): file is not opened");
-        return false;
-    }
-
-    if (!isLocked())
-        return true;
-
-    if (m_lock_mode == ReadLock) {
-        ReleaseMutex(rmutex);
-        CloseHandle(rmutex);
-        rmutex = 0;
-    }
-    else {
-        foreach(Qt::HANDLE mutex, rmutexes) {
-            ReleaseMutex(mutex);
-            CloseHandle(mutex);
-        }
-        rmutexes.clear();
-        ReleaseMutex(wmutex);
-    }
-
-    m_lock_mode = QtLockedFile::NoLock;
-    return true;
-}
-
-QtLockedFile::~QtLockedFile()
-{
-    Logger::log_message(QString(__func__));
-
-    if (isOpen())
-        unlock();
-    if (wmutex)
-        CloseHandle(wmutex);
-}
-
-#else
-
-
-bool QtLockedFile::lock(LockMode mode, bool block)
-{
-    Logger::log_message(QString(__func__));
-
-    if (!isOpen()) {
-        qWarning("QtLockedFile::lock(): file is not opened");
-        return false;
-    }
-
-    if (mode == NoLock)
-        return unlock();
-
-    if (mode == m_lock_mode)
-        return true;
-
-    if (m_lock_mode != NoLock)
-        unlock();
-
-    struct flock fl;
-    fl.l_whence = SEEK_SET;
-    fl.l_start = 0;
-    fl.l_len = 0;
-    fl.l_type = (mode == ReadLock) ? F_RDLCK : F_WRLCK;
-    int cmd = block ? F_SETLKW : F_SETLK;
-    int ret = fcntl(handle(), cmd, &fl);
-
-    if (ret == -1) {
-        if (errno != EINTR && errno != EAGAIN)
-            qWarning("QtLockedFile::lock(): fcntl: %s", strerror(errno));
-        return false;
-    }
-
-
-    m_lock_mode = mode;
-    return true;
-}
-
-bool QtLockedFile::unlock()
-{
-    Logger::log_message(QString(__func__));
-
-    if (!isOpen()) {
-        qWarning("QtLockedFile::unlock(): file is not opened");
-        return false;
-    }
-
-    if (!isLocked())
-        return true;
-
-    struct flock fl;
-    fl.l_whence = SEEK_SET;
-    fl.l_start = 0;
-    fl.l_len = 0;
-    fl.l_type = F_UNLCK;
-    int ret = fcntl(handle(), F_SETLKW, &fl);
-
-    if (ret == -1) {
-        qWarning("QtLockedFile::lock(): fcntl: %s", strerror(errno));
-        return false;
-    }
-
-    m_lock_mode = NoLock;
-    return true;
-}
-
-QtLockedFile::~QtLockedFile()
-{
-    Logger::log_message(QString(__func__));
-
-    if (isOpen())
-        unlock();
-}
-
-#endif
+    Destroys the \e QtLockedFile object. If any locks were held, they
+    are released.
+*/
