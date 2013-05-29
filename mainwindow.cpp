@@ -180,23 +180,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_webview.settings()->clearMemoryCaches();
 #endif
 
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::DnsPrefetchEnabled, true);
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, false);
+    QWebSettings::enablePersistentStorage();
+
     m_webview.settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);    
+#if defined(Q_OS_WIN)
+    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
+#else
+    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
+#endif
     m_webview.settings()->setAttribute(QWebSettings::SiteSpecificQuirksEnabled, false);
     m_webview.settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::DnsPrefetchEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::TiledBackingStoreEnabled, true);
     m_webview.settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
     m_webview.settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
     m_webview.settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
-    m_webview.settings()->setAttribute(QWebSettings::LocalContentCanAccessFileUrls, true);
     m_webview.setContextMenuPolicy(Qt::NoContextMenu);
-
-
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, false);
-   // QWebSettings::enablePersistentStorage(QApplication::applicationDirPath());
-    QWebSettings::enablePersistentStorage();
-
 
     m_networkCookieJar = new NetworkCookieJar();
 
