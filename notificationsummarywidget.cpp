@@ -40,7 +40,7 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
     Logger::log_message(QString("FUNC_COMPI"));
 
     setWindowFlags(
-        #ifdef Q_OS_MAC
+        #ifdef Q_OS_UNIX
             Qt::SubWindow | // This type flag is the second point
         #else
             Qt::Tool |
@@ -53,7 +53,7 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     m_displayWidget.setGeometry(0, 0, width(), height());
-    m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 10px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 10px; border-color: #2ec1e6; }");
+    m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
 
 
     m_numberOfMessagesText.setText(tr("No new messages"));

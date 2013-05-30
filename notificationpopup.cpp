@@ -46,7 +46,7 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
     m_markedRemoveFromOverview = false;
 
     setWindowFlags(
-        #ifdef Q_OS_MAC
+        #ifdef Q_OS_UNIX
             Qt::SubWindow | // This type flag is the second point
         #else
             Qt::Tool |
@@ -59,7 +59,7 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     m_displayWidget.setGeometry(0, 0, width(), height());
-    m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 10px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 10px; border-color: #2ec1e6; }");    
+    m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
     m_displayWidget.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
@@ -81,7 +81,7 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
     connect(&m_delButton, SIGNAL(clicked()), this, SLOT(messageDelete()));
 
     m_icon.setPixmap(pixmapIcon);
-    m_icon.setStyleSheet("QLabel { border-width: 1px; Margin-left: 3px;  }");
+    m_icon.setStyleSheet("QLabel { border-width: 1px }");
 
     messageText.remove("\n");
     messageText.remove("\t");
@@ -104,17 +104,16 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
     m_header.setWordWrap(false);
     m_header.setMaximumWidth(230);
     m_header.setText(headerText);
-    m_header.setStyleSheet("QLabel { color: #030303; Margin-left: 3px;   font: bold Arial; font-size: 13px; }");
+    m_header.setStyleSheet("QLabel { color: #030303; margin-left: 3px; font-weight: bold; font-size: 13px; }");
 
-    //m_message.setMaximumSize(300, 52);
     m_message.setMaximumWidth(300);
     m_message.setMinimumWidth(300);
 
     m_message.setText(messageText);
     m_message.setWordWrap(true);    
-    m_message.setStyleSheet("QLabel { color: #030303; Margin-left: 3px;  font-size: 13px; font: Arial; }");
+    m_message.setStyleSheet("QLabel { color: #030303; margin-left: 3px;  font-size: 13px; }");
 
-    m_dateDisp.setText(m_date.toString("hh:mm:ss"));
+    m_dateDisp.setText(m_date.toString(QLocale::system().timeFormat(QLocale::ShortFormat)));
     m_dateDisp.setStyleSheet("QLabel { color: #0f7ea6; font-size: 12px; }");
     m_dateDisp.setAlignment(Qt::AlignTop);
 
