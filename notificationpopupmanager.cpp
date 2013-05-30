@@ -47,7 +47,6 @@ NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(P
 
     m_startX = clientRect.left() + clientRect.width() - m_width;
     m_startY = clientRect.top() + clientRect.height() - m_height;
-    m_deltaY = 0;
 
     m_storedBadgeCounter = 0;
     m_notificationOverview = false;
@@ -106,7 +105,7 @@ void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, in
         {
             if (notificationWidgetQueue->at(i)->isVisible())
             {
-                heightOffset += (notificationWidgetQueue->at(i)->sizeHint().height());
+                heightOffset += (notificationWidgetQueue->at(i)->sizeHint().height() - 10); // overlap popups a bit - they have enough margin
                 nrOfVisiblePopups++;
 
                 if (nrOfVisiblePopups == widgetPos)
@@ -115,7 +114,6 @@ void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, in
         }
     }
 
-    m_deltaY = widgetPos * 110;
     QDesktopWidget* desktopWidget = QApplication::desktop();
     widget->setGeometry(m_startX, desktopWidget->availableGeometry().height() - widget->sizeHint().height() - heightOffset , m_width, widget->sizeHint().height());
 }
@@ -146,7 +144,7 @@ void NotificationPopupManager::downloadFinished(int messageId)
 
 void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QString headerText, QString messageText, bool isGroupMessage, int messageId, QString address, QDateTime date)
 {   
-    Logger::log_message(QString(__func__));
+    qDebug() << "new message arrived from" << headerText << "message:" << messageText;
 
     currentUserSettings = userSettings::getInstance()->GetUserSettingsData();
 
@@ -166,16 +164,17 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
             if (currentUserSettings.notificationTabData.privacyModeNotificationsSelector)
                 messageText = "";
 
-                if (!imageUrl.isNull())
-                {
-                    QSignalMapper* signalMapper = new QSignalMapper(this);
+            qDebug() << "show new notification popup";
 
-                    m_networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
-                    connect(m_networkReply, SIGNAL(finished()), signalMapper, SLOT(map()));
-                    signalMapper->setMapping(m_networkReply, messageId);
-                    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(downloadFinished(int)));
-                }
-                append(new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date));
+            if (!imageUrl.isNull())
+            {
+                QSignalMapper* signalMapper = new QSignalMapper(this);
+                m_networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
+                connect(m_networkReply, SIGNAL(finished()), signalMapper, SLOT(map()));
+                signalMapper->setMapping(m_networkReply, messageId);
+                connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(downloadFinished(int)));
+            }
+            append(new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date));
         }        
     }
 }

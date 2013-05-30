@@ -51,7 +51,7 @@ public:
 private:
     void playPopupSound();
     void setWidgetGraphicPos(NotificationPopup* widget, int widgetPos);
-    int  getSoundNeeded(bool firstPopup, bool isGroupMessage, bool popupMode);
+    int getSoundNeeded(bool firstPopup, bool isGroupMessage, bool popupMode);
     int getSingleOrGroupIndex(bool isGroupMessage);
 
 private:   
@@ -66,7 +66,7 @@ private:
     int m_startY;
     int m_width;
     int m_height;
-    const int m_maxNotificationPopups;
+    int m_maxNotificationPopups;
     userSettingsData currentUserSettings;
     int m_storedBadgeCounter;
     bool m_notificationOverview;
