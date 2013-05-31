@@ -237,14 +237,12 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
     for (int i = 0; i < nrOfItems; i++)
     {
-        notificationWidgetQueue->at(i)->hide();
-        notificationWidgetQueue->at(i)->stopTimer();
+        notificationWidgetQueue->at(i)->deactivatePopup();
     }
 
     if (notificationWidgetQueue->count() == 0)
     {
-        m_notificationSummaryWidget.hide();
-        m_notificationSummaryWidget.stopTimer();
+        m_notificationSummaryWidget.deactivatePopup();
     }
 
     if (enable)     // show last items
@@ -257,15 +255,13 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
         for (int i = idxFirst; i < nrOfItems; i++)
         {
             setWidgetGraphicPos(notificationWidgetQueue->at(i), i - idxFirst);
-            notificationWidgetQueue->at(i)->startTimer(POPUP_FADEOUT_TIME);
-            notificationWidgetQueue->at(i)->show();
+            notificationWidgetQueue->at(i)->activatePopup();
         }
 
         if (notificationWidgetQueue->count() == 0)
         {
             m_notificationSummaryWidget.setGeometry(m_startX, m_startY, m_width, m_height);
-            m_notificationSummaryWidget.startTimer(POPUP_FADEOUT_TIME);
-            m_notificationSummaryWidget.show();
+            m_notificationSummaryWidget.activatePopup();
         }
     }
 }
@@ -277,8 +273,7 @@ void NotificationPopupManager::append(NotificationPopup* widget)
 
     if (notificationWidgetQueue->count() == 0)
     {
-        m_notificationSummaryWidget.hide();
-        m_notificationSummaryWidget.stopTimer();
+        m_notificationSummaryWidget.deactivatePopup();
     }
 
     connect(widget, SIGNAL(deleted(NotificationPopup*)), this, SLOT(removeFirst(NotificationPopup*)));    
@@ -288,7 +283,7 @@ void NotificationPopupManager::append(NotificationPopup* widget)
     int nrOfVisiblePopups = 0;
     int firstIndexOfVisiblePopup = 0;
 
-    for(int i = 0; i < currentNrOfPopups; i++)
+    for (int i = 0; i < currentNrOfPopups; i++)
     {
         if (notificationWidgetQueue->at(i)->isVisible())
         {
@@ -300,7 +295,7 @@ void NotificationPopupManager::append(NotificationPopup* widget)
 
     int widgetPos = 0;
 
-    if(nrOfVisiblePopups < m_maxNotificationPopups)
+    if (nrOfVisiblePopups < m_maxNotificationPopups)
     {
         widgetPos = nrOfVisiblePopups % m_maxNotificationPopups;
         setWidgetGraphicPos(widget, widgetPos);

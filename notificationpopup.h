@@ -40,15 +40,17 @@ public:
     ~NotificationPopup();
 
     void activatePopup();
+    void deactivatePopup();
     void setFaceImage(QPixmap pixmapIcon);
     int  getMessageId() const;
     bool isItemMarkedToRemoveFromOverview() const;
     bool isGroupNotification() const;
 
+private:
+
     void stopTimer();
     void startTimer(int time);
 
-private:
     QTimer m_timeout;
 
     // notification information
@@ -86,6 +88,7 @@ public slots:
     void messageRead();
 
 protected:
+    bool eventFilter(QObject *obj, QEvent *event);
     void mousePressEvent(QMouseEvent *event);
 };
 

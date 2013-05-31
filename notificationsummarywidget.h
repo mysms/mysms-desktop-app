@@ -38,13 +38,15 @@ public:
     ~NotificationSummaryWidget();
 
     void activatePopup();
-    void startTimer(int time);
-    void stopTimer();
+    void deactivatePopup();
 
 protected:
     void mousePressEvent(QMouseEvent *event);
 
 private:
+    void startTimer(int time);
+    void stopTimer();
+
     // graphic elements
     QWidget     m_displayWidget;
     QVBoxLayout m_containerLayout;

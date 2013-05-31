@@ -33,7 +33,9 @@
 #include "globalsettings.h"
 
 NotificationSummaryWidget::~NotificationSummaryWidget()
-{}
+{
+    disconnect(&m_timeout, SIGNAL(timeout()), this, SLOT(hide()));
+}
 
 NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(parent)
 {
@@ -41,7 +43,7 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
 
     setWindowFlags(
         #ifdef Q_OS_UNIX
-            Qt::SubWindow | // This type flag is the second point
+            Qt::SubWindow | Qt::X11BypassWindowManagerHint | // This type flag is the second point
         #else
             Qt::Tool |
         #endif
@@ -51,6 +53,8 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
     setAttribute(Qt::WA_NoSystemBackground, true);
     setAttribute(Qt::WA_TranslucentBackground, true);   // set the parent widget's background to translucent
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    connect(&m_timeout, SIGNAL(timeout()), this, SLOT(hide()));
 
     m_displayWidget.setGeometry(0, 0, width(), height());
     m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
@@ -84,8 +88,13 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
 void NotificationSummaryWidget::activatePopup()
 {
     show();
-    connect(&m_timeout, SIGNAL(timeout()), this, SLOT(hide()));
-    startTimer(POPUP_FADEOUT_TIME);
+    startTimer(POPUP_HOVER_FADEOUT_TIME);
+}
+
+void NotificationSummaryWidget::deactivatePopup()
+{
+    hide();
+    stopTimer();
 }
 
 void NotificationSummaryWidget::startTimer(int time)

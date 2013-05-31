@@ -42,6 +42,7 @@
 #define POPUP_OVERVIEW_TEXT_MAX_SIZE    15
 #define POPUP_MESSAGE_MAX_SIZE          300
 #define POPUP_FADEOUT_TIME              10000
+#define POPUP_HOVER_FADEOUT_TIME        2000
 #define POPUP_START_TIME                500
 #define POPUP_NUMBER                    3
 

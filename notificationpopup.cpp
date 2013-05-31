@@ -28,17 +28,16 @@
 #include <QString>
 
 #include "mainwindow.h"
-#include "logger.h"
 #include "soundselector.h"
 #include "globalsettings.h"
 
 NotificationPopup::~NotificationPopup()
-{}
+{
+    disconnect(&m_timeout, SIGNAL(timeout()), this, SLOT(fadeOut()));
+}
 
 NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QString messageText, bool isGroupMessage, int messageId, QString address, QDateTime date, QWidget *parent) : QWidget(parent)
 {
-    Logger::log_message(QString(__func__));
-
     m_isGroupMessage = isGroupMessage;
     m_messageId = messageId;
     m_address = address;
@@ -47,7 +46,7 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
 
     setWindowFlags(
         #ifdef Q_OS_UNIX
-            Qt::SubWindow | // This type flag is the second point
+            Qt::SubWindow | Qt::X11BypassWindowManagerHint | // This type flag is the second point
         #else
             Qt::Tool |
         #endif
@@ -58,26 +57,32 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
     setAttribute(Qt::WA_TranslucentBackground, true);   // set the parent widget's background to translucent
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
+    connect(&m_timeout, SIGNAL(timeout()), this, SLOT(fadeOut()));
+
     m_displayWidget.setGeometry(0, 0, width(), height());
     m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
     m_displayWidget.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    m_displayWidget.installEventFilter(this);
 
     m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
     m_closeButton.setMaximumSize(20,20);
     m_closeButton.setStyleSheet("QPushButton { border: none;  }");
     m_closeButton.setToolTip(tr("Close pop-up"));
+    m_closeButton.installEventFilter(this);
     connect(&m_closeButton, SIGNAL(clicked()), this, SLOT(fadeOut()));
 
     m_readButton.setIcon(QIcon(QPixmap(":/resource/read.png")));
     m_readButton.setMaximumSize(20,20);
     m_readButton.setStyleSheet("QPushButton { border: none;   }");
     m_readButton.setToolTip(tr("Mark message as read"));
+    m_readButton.installEventFilter(this);
     connect(&m_readButton, SIGNAL(clicked()), this, SLOT(messageRead()));
 
     m_delButton.setIcon(QIcon(QPixmap(":/resource/del.png")));
     m_delButton.setMaximumSize(20,20);
     m_delButton.setStyleSheet("QPushButton { border: none;  }");
     m_delButton.setToolTip(tr("Delete message"));
+    m_delButton.installEventFilter(this);
     connect(&m_delButton, SIGNAL(clicked()), this, SLOT(messageDelete()));
 
     m_icon.setPixmap(pixmapIcon);
@@ -141,30 +146,22 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
 
 void NotificationPopup::setFaceImage(QPixmap pixmapIcon)
 {
-    Logger::log_message(QString(__func__));
-
     m_icon.setPixmap(pixmapIcon);
 }
 
 int NotificationPopup::getMessageId() const
 {
-   Logger::log_message(QString(__func__));
-
     return m_messageId;
 }
 
 void NotificationPopup::fadeOut()
 {
-    Logger::log_message(QString(__func__));
-
     m_timeout.stop();
     emit deleted(this);
 }
 
 void NotificationPopup::messageDelete()
 {
-    Logger::log_message(QString(__func__));
-
     QString mycall = QString("messageService.deleteMessage(" + QString::number(m_messageId) + ",'" + m_address + "'," + QString("false") + ")");
     MainWindow::instance()->m_webview.page()->mainFrame()->evaluateJavaScript(mycall);
 
@@ -174,15 +171,11 @@ void NotificationPopup::messageDelete()
 
 bool NotificationPopup::isItemMarkedToRemoveFromOverview() const
 {
-    Logger::log_message(QString(__func__));
-
     return m_markedRemoveFromOverview;
 }
 
 void NotificationPopup::messageRead()
 {
-    Logger::log_message(QString(__func__));
-
     QString mycall = QString("messageService.markMessageRead(%1, '%2')").arg(QString::number(m_messageId), m_address);
     MainWindow::instance()->m_webview.page()->mainFrame()->evaluateJavaScript(mycall);
 
@@ -192,57 +185,68 @@ void NotificationPopup::messageRead()
 
 bool NotificationPopup::isGroupNotification() const
 {
-   Logger::log_message(QString(__func__));
-
    return m_isGroupMessage;
 }
 
 void NotificationPopup::activatePopup()
 {
-    Logger::log_message(QString(__func__));
-
     show();
-    connect(&m_timeout, SIGNAL(timeout()), this, SLOT(fadeOut()));
     startTimer(POPUP_FADEOUT_TIME);
+}
+
+void NotificationPopup::deactivatePopup()
+{
+    hide();
+    stopTimer();
 }
 
 void NotificationPopup::startTimer(int time)
 {
-    Logger::log_message(QString(__func__));
-
     m_timeout.start(time);
 }
 
 void NotificationPopup::stopTimer()
 {
-    Logger::log_message(QString(__func__));
-
     m_timeout.stop();
+}
+
+bool NotificationPopup::eventFilter(QObject *obj, QEvent *event)
+{
+
+    if (event->type() == QEvent::Enter)
+    {
+        if (obj == &m_displayWidget)
+            stopTimer();
+        else if (obj == &m_closeButton)
+            m_closeButton.setIcon(QIcon(QPixmap(":/resource/close-hover.png")));
+        else if (obj == &m_readButton)
+            m_readButton.setIcon(QIcon(QPixmap(":/resource/read-hover.png")));
+        else if (obj == &m_delButton)
+            m_delButton.setIcon(QIcon(QPixmap(":/resource/del-hover.png")));
+    }
+    else if (event->type() == QEvent::Leave)
+    {
+        if (obj == &m_displayWidget)
+            startTimer(POPUP_HOVER_FADEOUT_TIME);
+        else if (obj == &m_closeButton)
+            m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
+        else if (obj == &m_readButton)
+            m_readButton.setIcon(QIcon(QPixmap(":/resource/read.png")));
+        else if (obj == &m_delButton)
+            m_delButton.setIcon(QIcon(QPixmap(":/resource/del.png")));
+    }
+    return QObject::eventFilter(obj, event);
 }
 
 void NotificationPopup::mousePressEvent(QMouseEvent *event)
 {
-    Logger::log_message(QString(__func__));
-
     Qt::MouseButtons mouseButtons = event->buttons();
 
     if(mouseButtons == Qt::LeftButton)
     {
-        MainWindow * mainWindow = MainWindow::instance();        
+        MainWindow *mainWindow = MainWindow::instance();
 
-        Logger::log_message(m_address);
-
-        QString urlEnc;
-
-        if(m_isGroupMessage)
-            urlEnc = m_address.replace("#", "%23");
-        else
-            urlEnc = m_address;
-
-        Logger::log_message(m_address);
-        Logger::log_message(urlEnc);
-
-        mainWindow->loadPage("/#messages:" + urlEnc);
+        mainWindow->loadPage("/#messages:" + m_address.replace("#", "%23"));
 
         if (mainWindow->isWindowClosed())
             mainWindow->openWindow();
