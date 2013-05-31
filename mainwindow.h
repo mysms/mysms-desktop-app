@@ -24,7 +24,7 @@
 
 #include "jsinterface.h"
 #include "usersettings.h"
-#include "tabdialog.h"
+#include "usersettingsdialog.h"
 #include "updatedialog.h"
 #include "notificationpopup.h"
 #include "notificationpopupmanager.h"
@@ -98,9 +98,9 @@ private:
     QAction *m_refreshAction;
     QAction *m_settingsAction;
 
-    QSystemTrayIcon * m_trayIcon;
-    QMenu *           m_trayIconMenu;
-    TabDialog  *       m_tabdialog;
+    QSystemTrayIcon *m_trayIcon;
+    QMenu *m_trayIconMenu;
+    UserSettingsDialog  *m_userSettingsDialog;
 
     NotificationPopupManager * m_notificationPopupManager;
     updateDialog *    m_updatedialog;

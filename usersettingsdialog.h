@@ -19,8 +19,8 @@
 **
 ****************************************************************************/
 
-#ifndef TABDIALOG_H
- #define TABDIALOG_H
+#ifndef USERSETTINGSDIALOG_H
+ #define USERSETTINGSDIALOG_H
 
  #include <QCheckBox>
 
@@ -150,7 +150,7 @@ private slots:
      int m_singleCachedComboIndex;
  };
 
- class TabDialog : public QDialog
+ class UserSettingsDialog : public QDialog
  {
      Q_OBJECT
 
@@ -158,8 +158,8 @@ private slots:
      void accept();
 
  public:
-     TabDialog(QWidget *parent = 0);
-     ~TabDialog();
+     UserSettingsDialog(QWidget *parent = 0);
+     ~UserSettingsDialog();
 
  private:
      QTabWidget         m_tabWidget;
@@ -174,4 +174,4 @@ private slots:
      QVBoxLayout        m_mainLayout;
  };
 
- #endif
+ #endif // USERSETTINGSDIALOG_H

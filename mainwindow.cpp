@@ -108,7 +108,7 @@ void MainWindow::updateBadgeCounter(QIcon icon)
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {        
     m_updatedialog = NULL;
-    m_tabdialog = NULL;
+    m_userSettingsDialog = NULL;
     m_notificationPopupManager = new NotificationPopupManager();
 
     UserSettings *userSettings = UserSettings::getInstance();
@@ -118,7 +118,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     else
         userSettings->setDefaultData();
 
-    m_tabdialog = new TabDialog;
+    m_userSettingsDialog = new UserSettingsDialog();
 
     m_icon = QIcon(":/resource/icon.png");
 
@@ -473,8 +473,8 @@ void MainWindow::createTrayIcon()
 
 void MainWindow::settings()
 {
-    m_tabdialog->show();
-    m_tabdialog->activateWindow();
+    m_userSettingsDialog->show();
+    m_userSettingsDialog->activateWindow();
 }
 
 void MainWindow::refresh()

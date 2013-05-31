@@ -19,13 +19,13 @@ SOURCES += networkcookiejar.cpp \
     qnetworkaccessmanagercustom.cpp \
     notificationpopup.cpp \
     notificationpopupmanager.cpp \
-    tabdialog.cpp \
     usersettings.cpp \
     notificationsummarywidget.cpp \
     updatedialog.cpp \
     soundselector.cpp \
     filedownloader.cpp \
-    webview.cpp
+    webview.cpp \
+    usersettingsdialog.cpp
 HEADERS += networkcookiejar.h \
     mainwindow.h \
     qtsingleapplication.h \
@@ -34,14 +34,14 @@ HEADERS += networkcookiejar.h \
     qnetworkaccessmanagercustom.h \
     notificationpopup.h \
     notificationpopupmanager.h \
-    tabdialog.h \
     usersettings.h \
     notificationsummarywidget.h \
     updatedialog.h \
     soundselector.h \
     filedownloader.h \
     webview.h \
-    globalsettings.h
+    globalsettings.h \
+    usersettingsdialog.h
 FORMS +=
 OTHER_FILES += 
 RESOURCES += mysms.qrc

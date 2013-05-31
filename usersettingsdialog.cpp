@@ -34,10 +34,10 @@
 #include <QApplication>
 
 #include "usersettings.h"
-#include "tabdialog.h"
+#include "usersettingsdialog.h"
 #include "soundselector.h"
 
- TabDialog::TabDialog( QWidget *parent) : QDialog(parent)
+ UserSettingsDialog::UserSettingsDialog( QWidget *parent) : QDialog(parent)
  {
      m_tabWidget.addTab(&m_commonTab, tr("Common Settings"));
      m_tabWidget.addTab(&m_notificationTab, tr("Notifications"));
@@ -58,10 +58,10 @@
      setWindowTitle(tr("Settings"));
  }
 
- TabDialog::~TabDialog()
+ UserSettingsDialog::~UserSettingsDialog()
  {}
 
- void  TabDialog::accept()
+ void UserSettingsDialog::accept()
  {
      UserSettings *settings = UserSettings::getInstance();
 
