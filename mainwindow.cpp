@@ -110,6 +110,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_updateDialog = NULL;
     m_userSettingsDialog = NULL;
     m_notificationPopupManager = new NotificationPopupManager();
+    m_lastClickTime = 0;
 
     UserSettings *userSettings = UserSettings::getInstance();
 
@@ -216,7 +217,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(&m_webview, SIGNAL(linkClicked(QUrl)), SLOT(openExternalUrl(QUrl)));
     connect(m_webview.page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(addJsObjects()));
     connect(m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));    
-    connect(&m_ClickTimer, SIGNAL(timeout()), this, SLOT(singleClick()));
+    connect(&m_clickDelayTimer, SIGNAL(timeout()), this, SLOT(singleClick()));
 
 #ifdef WEBINSPECTOR
     m_webview.page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
@@ -375,7 +376,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::singleClick()
 {
-    m_ClickTimer.stop();
+    m_clickDelayTimer.stop();
 
     if (!(isWindowClosed()))
     {
@@ -388,17 +389,34 @@ void MainWindow::singleClick()
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
+    qint64 time;
+
     switch (reason)
     {
         case QSystemTrayIcon::DoubleClick:
-            m_ClickTimer.stop();
+            m_clickDelayTimer.stop();
             if (isWindowClosed())
                 openWindow();
+#ifdef Q_OS_LINUX
+            else
+                closeWindow(NULL);
+#endif
             break;
 
         case QSystemTrayIcon::Trigger:
-            m_notificationPopupManager->setNotificationModeOverview(false);
-            m_ClickTimer.start(POPUP_START_TIME);
+            if (isWindowClosed()) {
+                time = QDateTime::currentMSecsSinceEpoch();
+                if (time - m_lastClickTime > POPUP_HOVER_FADEOUT_TIME) {
+                    m_lastClickTime = time;
+                    m_notificationPopupManager->setNotificationModeOverview(false);
+                    m_clickDelayTimer.start(POPUP_DELAY_TIME);
+                } else {
+                    openWindow();
+                }
+            } else {
+                m_notificationPopupManager->setNotificationModeOverview(false);
+                m_clickDelayTimer.start(POPUP_DELAY_TIME);
+            }
             break;
 
         default:

@@ -48,6 +48,7 @@ public:
     void setBadgeCounter(const int badgeCounter);
     void restoreBadgeCounter();
 
+
 private:
     void playPopupSound();
     void setWidgetGraphicPos(NotificationPopup* widget, int widgetPos);

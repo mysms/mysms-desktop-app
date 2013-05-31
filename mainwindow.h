@@ -93,7 +93,8 @@ private:
     QIcon m_icon;
     Qt::WindowStates m_savedWindowState;
 
-    QTimer m_ClickTimer;
+    QTimer m_clickDelayTimer;
+    qint64 m_lastClickTime;
     QAction *m_quitAction;
     QAction *m_refreshAction;
     QAction *m_settingsAction;
