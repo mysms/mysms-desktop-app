@@ -11,7 +11,6 @@ TARGET = mysms
 TEMPLATE = app
 CONFIG += static
 SOURCES += networkcookiejar.cpp \
-    kdenotification.cpp \
     main.cpp \
     mainwindow.cpp \
     qtsingleapplication.cpp \
@@ -29,7 +28,6 @@ SOURCES += networkcookiejar.cpp \
     filedownloader.cpp \
     webview.cpp
 HEADERS += networkcookiejar.h \
-    kdenotification.h \
     mainwindow.h \
     qtsingleapplication.h \
     qtlocalpeer.h \
