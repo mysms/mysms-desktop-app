@@ -43,8 +43,8 @@ private slots:
     void fileDownloaded(QNetworkReply* pReply);
 	
 private:
-    QNetworkAccessManager m_WebCtrl;
-    QByteArray m_DownloadedData;
+    QNetworkAccessManager m_webCtrl;
+    QByteArray m_downloadedData;
 };
 
 #endif // FILEDOWNLOADER_H

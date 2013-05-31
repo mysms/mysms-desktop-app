@@ -23,9 +23,9 @@
 
 FileDownloader::FileDownloader(QUrl imageUrl, QObject *parent) : QObject(parent)
 {
-    connect(&m_WebCtrl, SIGNAL(finished(QNetworkReply*)), SLOT(fileDownloaded(QNetworkReply*)));
+    connect(&m_webCtrl, SIGNAL(finished(QNetworkReply*)), SLOT(fileDownloaded(QNetworkReply*)));
     QNetworkRequest request(imageUrl);
-    m_WebCtrl.get(request);
+    m_webCtrl.get(request);
 }
 
 FileDownloader::~FileDownloader()
@@ -34,12 +34,16 @@ FileDownloader::~FileDownloader()
 
 void FileDownloader::fileDownloaded(QNetworkReply* pReply)
 {
-    m_DownloadedData = pReply->readAll();   
+
+    disconnect(&m_webCtrl, SIGNAL(finished(QNetworkReply*)));
+
+    m_downloadedData = pReply->readAll();
+
     pReply->deleteLater();
     emit downloaded();
 }
 
 QByteArray FileDownloader::downloadedData() const
 {
-    return m_DownloadedData;
+    return m_downloadedData;
 }
