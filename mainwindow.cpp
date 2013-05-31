@@ -372,8 +372,10 @@ void MainWindow::openWindow()
         setWindowState(m_savedWindowState | Qt::WindowActive);
     }
 
+#ifdef Q_OS_WIN
     m_trayIcon->hide();           // workaround -> after activation of the main window, the next Trigger event of the system tray doesn´t occur
     m_trayIcon->show();
+#endif
 
     activateWindow();
 }
@@ -428,17 +430,18 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
     switch (reason)
     {
         case QSystemTrayIcon::DoubleClick:
-                                            m_ClickTimer.stop();
-                                            if (isWindowClosed())
-                                                openWindow();
-                                            break;
+            m_ClickTimer.stop();
+            if (isWindowClosed())
+                openWindow();
+            break;
 
         case QSystemTrayIcon::Trigger:
-                                            m_notificationPopupManager->setNotificationModeOverview(false);                                            
-                                            m_ClickTimer.start(POPUP_START_TIME);
-                                            break;     
+            m_notificationPopupManager->setNotificationModeOverview(false);
+            m_ClickTimer.start(POPUP_START_TIME);
+            break;
+
         default:
-                                            break;
+            break;
     }
 }
 
