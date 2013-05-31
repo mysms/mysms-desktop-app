@@ -63,9 +63,9 @@
 
  void  TabDialog::accept()
  {
-     userSettings * settings = userSettings::getInstance();
+     UserSettings *settings = UserSettings::getInstance();
 
-     userSettingsData data;
+     UserSettingsData data;
 
      data.commonTabData.startExecSelector = m_commonTab.m_startExecSelector.isChecked();
      data.commonTabData.showInTaskbarAfterExitSelector = m_commonTab.m_showInTaskbarAfterExitSelector.isChecked();
@@ -113,7 +113,7 @@
 
  CommonTab::CommonTab( QWidget *parent): QWidget(parent)
  {
-     userSettingsData settingsData = userSettings::getInstance()->GetUserSettingsData();
+     UserSettingsData settingsData = UserSettings::getInstance()->getUserSettingsData();
 
      m_startExecSelector.setText(tr("Run mysms on Windows startup"));
      m_startExecSelector.setChecked(settingsData.commonTabData.startExecSelector);
@@ -130,7 +130,7 @@
 
  NotificationTab::NotificationTab( QWidget *parent) : QWidget(parent)
  {
-     userSettingsData settingsData = userSettings::getInstance()->GetUserSettingsData();
+     UserSettingsData settingsData = UserSettings::getInstance()->getUserSettingsData();
 
      m_displayNotificationsSelector.setText(tr("Show notifications"));
      m_privacyModeNotificationsSelector.setText(tr("Privacy Mode - message text is not displayed"));
@@ -159,7 +159,7 @@
 
  SoundTab::SoundTab( QWidget *parent): QWidget(parent)
  {
-     userSettingsData settingsData = userSettings::getInstance()->GetUserSettingsData();
+     UserSettingsData settingsData = UserSettings::getInstance()->getUserSettingsData();
 
      m_soundLabel.setText(tr("Play sound, if ..."));
 

@@ -101,7 +101,6 @@ private:
     QSystemTrayIcon * m_trayIcon;
     QMenu *           m_trayIconMenu;
     TabDialog  *       m_tabdialog;
-    userSettings *    m_usersettings;
 
     NotificationPopupManager * m_notificationPopupManager;
     updateDialog *    m_updatedialog;

@@ -136,7 +136,7 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 {   
     qDebug() << "new message arrived from" << headerText << "message:" << messageText;
 
-    currentUserSettings = userSettings::getInstance()->GetUserSettingsData();
+    UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
 
     int playSoundIndex = getSoundNeeded(((notificationWidgetQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
 
@@ -149,9 +149,9 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
     if (MainWindow::instance()->isWindowClosed())       // only show notifications when main window is minimized
     {        
-        if (currentUserSettings.notificationTabData.displayNotificationsSelector)
+        if (userSettingsData.notificationTabData.displayNotificationsSelector)
         {
-            if (currentUserSettings.notificationTabData.privacyModeNotificationsSelector)
+            if (userSettingsData.notificationTabData.privacyModeNotificationsSelector)
                 messageText = "";
 
             qDebug() << "show new notification popup";
@@ -171,23 +171,29 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
 int NotificationPopupManager::getSingleOrGroupIndex(bool isGroupMessage)
 {
+
+    UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
+
     int playSoundPopup = no_sound;
 
-    if (isGroupMessage && currentUserSettings.soundTabData.groupMessageSelector)
-        playSoundPopup = currentUserSettings.soundTabData.groupSoundIndex;
-    else if (!isGroupMessage  && currentUserSettings.soundTabData.singleMessageSelector)
-        playSoundPopup = currentUserSettings.soundTabData.singleSoundIndex;
+    if (isGroupMessage && userSettingsData.soundTabData.groupMessageSelector)
+        playSoundPopup = userSettingsData.soundTabData.groupSoundIndex;
+    else if (!isGroupMessage  && userSettingsData.soundTabData.singleMessageSelector)
+        playSoundPopup = userSettingsData.soundTabData.singleSoundIndex;
 
     return playSoundPopup;
 }
 
 int NotificationPopupManager::getSoundNeeded(bool firstPopup, bool isGroupMessage, bool popupMode)
 {
+
+    UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
+
     int playSoundPopup = no_sound;
 
     if (popupMode)
     {
-        if (currentUserSettings.soundTabData.messageSoundOnlyFirst)
+        if (userSettingsData.soundTabData.messageSoundOnlyFirst)
         {
             if (firstPopup)
                 playSoundPopup = getSingleOrGroupIndex(isGroupMessage);
@@ -197,7 +203,7 @@ int NotificationPopupManager::getSoundNeeded(bool firstPopup, bool isGroupMessag
     }
     else
     {
-        if (currentUserSettings.soundTabData.messageSoundEnable)
+        if (userSettingsData.soundTabData.messageSoundEnable)
             playSoundPopup = getSingleOrGroupIndex(isGroupMessage);
     }
 

@@ -110,12 +110,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_updatedialog = NULL;
     m_tabdialog = NULL;
     m_notificationPopupManager = new NotificationPopupManager();
-    m_usersettings = userSettings::getInstance();
 
-    if (m_usersettings->areSettingsAvailable())
-        m_usersettings->loadSettings();
+    UserSettings *userSettings = UserSettings::getInstance();
+
+    if (userSettings->areSettingsAvailable())
+        userSettings->loadSettings();
     else
-        m_usersettings->setDefaultData();
+        userSettings->setDefaultData();
 
     m_tabdialog = new TabDialog;
 
@@ -315,7 +316,7 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeWindow(QCloseEvent *event)
 {
-    userSettingsData data = m_usersettings->GetUserSettingsData();
+    UserSettingsData data = UserSettings::getInstance()->getUserSettingsData();
 
     if(data.commonTabData.showInTaskbarAfterExitSelector)
         showMinimized();

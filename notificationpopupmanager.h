@@ -67,7 +67,6 @@ private:
     int m_width;
     int m_height;
     int m_maxNotificationPopups;
-    userSettingsData currentUserSettings;
     int m_storedBadgeCounter;
     bool m_notificationOverview;
 };

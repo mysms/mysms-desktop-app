@@ -84,12 +84,12 @@ public:
     int  groupSoundIndex;
 } ;
 
-class userSettingsData
+class UserSettingsData
 {
 
 
 public:
-    void SetTabData(userSettingsData const & passedUserSettingsData);
+    void setTabData(UserSettingsData const & passedUserSettingsData);
 
     TCommonTabData commonTabData;
     TNotificationTabData notificationTabData;
@@ -98,29 +98,29 @@ public:
     TSoundTabData soundTabData;
 };
 
-class userSettings
+class UserSettings
 {
 public:
-    static userSettings* getInstance();
-    void saveSettings(userSettingsData const & passedUserSettingsData);
+    static UserSettings* getInstance();
+    void saveSettings(UserSettingsData const & passedUserSettingsData);
     void loadSettings();
     void removeObsoleteVersionSettings();
     void setDefaultData();
     bool areSettingsAvailable();
 
-    userSettingsData GetUserSettingsData() const;
+    UserSettingsData getUserSettingsData() const;
 
 private:
-    userSettings();
-    ~userSettings();
+    UserSettings();
+    ~UserSettings();
 
     void setStartup();
     void loadStartup();
 
-    static userSettings* muserSettings;
+    static UserSettings* m_userSettings;
 private:
-    QSettings settings;
-    userSettingsData muserSettingsData;
+    QSettings m_settings;
+    UserSettingsData m_userSettingsData;
 };
 
 #endif // USERSETTINGS_H
