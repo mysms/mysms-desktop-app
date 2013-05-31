@@ -29,12 +29,12 @@
 
 #include "filedownloader.h"
 
-class updateDialog : public QWidget
+class UpdateDialog : public QWidget
 {
     Q_OBJECT
 public:
-    explicit updateDialog(QWidget *parent = 0);
-    ~updateDialog();
+    explicit UpdateDialog(QWidget *parent = 0);
+    ~UpdateDialog();
 
 signals:
 

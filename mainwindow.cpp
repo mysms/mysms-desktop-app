@@ -72,10 +72,10 @@ MainWindow::~MainWindow()
     delete m_notificationPopupManager;
     m_notificationPopupManager = NULL;
 
-    if (m_updatedialog != NULL)
+    if (m_updateDialog != NULL)
     {
-        delete m_updatedialog;
-        m_updatedialog = NULL;
+        delete m_updateDialog;
+        m_updateDialog = NULL;
     }
 
     delete m_trayIconMenu;
@@ -107,7 +107,7 @@ void MainWindow::updateBadgeCounter(QIcon icon)
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {        
-    m_updatedialog = NULL;
+    m_updateDialog = NULL;
     m_userSettingsDialog = NULL;
     m_notificationPopupManager = new NotificationPopupManager();
 
@@ -257,18 +257,16 @@ void MainWindow::fileReplyFinished(QNetworkReply * networkReply)
         int middleServerVersion = version[2].digitValue();
         int minorServerVersion  = version[4].digitValue();
 
-        QString currentVersionString = QString::number(VERSION_MAJOR) + "." + QString::number(VERSION_MIDDLE) + "." + QString::number(VERSION_MINOR);
-
         if (VERSION_MAJOR < majorServerVersion)
-            m_updatedialog = new updateDialog();
+            m_updateDialog = new UpdateDialog();
         else if (VERSION_MAJOR == majorServerVersion)
         {
             if (VERSION_MIDDLE < middleServerVersion)
-                m_updatedialog = new updateDialog();
+                m_updateDialog = new UpdateDialog();
             else if (VERSION_MIDDLE == middleServerVersion)
             {
                 if (VERSION_MINOR < minorServerVersion)
-                    m_updatedialog = new updateDialog();
+                    m_updateDialog = new UpdateDialog();
             }
         }
     }

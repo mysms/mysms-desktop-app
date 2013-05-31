@@ -103,7 +103,7 @@ private:
     UserSettingsDialog  *m_userSettingsDialog;
 
     NotificationPopupManager * m_notificationPopupManager;
-    updateDialog *    m_updatedialog;
+    UpdateDialog *    m_updateDialog;
 
     QNetworkAccessManager m_genPurposeNetworkManager;
     QWebInspector *   m_inspector;

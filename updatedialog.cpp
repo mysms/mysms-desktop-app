@@ -31,7 +31,7 @@
 #include <QMessageBox>
 #include <QDir>
 
-updateDialog::updateDialog(QWidget *parent) : QWidget(parent)
+UpdateDialog::UpdateDialog(QWidget *parent) : QWidget(parent)
 {        
     QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
@@ -68,7 +68,7 @@ updateDialog::updateDialog(QWidget *parent) : QWidget(parent)
     hide();
 }
 
-updateDialog::~updateDialog()
+UpdateDialog::~UpdateDialog()
 {
     if (m_pFile != NULL)
     {
@@ -77,7 +77,7 @@ updateDialog::~updateDialog()
     }
 }
 
-void updateDialog::accept()
+void UpdateDialog::accept()
 {
     QProcess * myProgress = new QProcess;
     connect(myProgress, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
@@ -87,12 +87,12 @@ void updateDialog::accept()
     hide();
 }
 
-void updateDialog::reject()
+void UpdateDialog::reject()
 {
     hide();
 }
 
-void updateDialog::loadFile()
+void UpdateDialog::loadFile()
 {        
     QFile localFile(QApplication::applicationDirPath() + "\\" + UPDATE_LOCALFILE);
     
@@ -106,7 +106,7 @@ void updateDialog::loadFile()
     activateWindow();
 }
 
-void updateDialog::processError(QProcess::ProcessError err)
+void UpdateDialog::processError(QProcess::ProcessError err)
 {
     switch(err)
     {	case QProcess::FailedToStart:   QMessageBox::information(0,"FailedToStart","FailedToStart"); break;
@@ -119,7 +119,7 @@ void updateDialog::processError(QProcess::ProcessError err)
     }
 }
 
-void updateDialog::processStarted()
+void UpdateDialog::processStarted()
 {
     QApplication::quit();
 }
