@@ -16,7 +16,6 @@ SOURCES += networkcookiejar.cpp \
     qtsingleapplication.cpp \
     qtlocalpeer.cpp \
     jsinterface.cpp \
-    logger.cpp \
     qnetworkaccessmanagercustom.cpp \
     notificationpopup.cpp \
     notificationpopupmanager.cpp \
@@ -32,7 +31,6 @@ HEADERS += networkcookiejar.h \
     qtsingleapplication.h \
     qtlocalpeer.h \
     jsinterface.h \
-    logger.h \
     qnetworkaccessmanagercustom.h \
     notificationpopup.h \
     notificationpopupmanager.h \

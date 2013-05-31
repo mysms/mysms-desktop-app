@@ -21,7 +21,6 @@
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
-#include "logger.h"
 #include "usersettings.h"
 #include "globalsettings.h"
 
@@ -34,8 +33,6 @@
 
 int main(int argc, char *argv[])
 {    
-    Logger::open_file();
-    Logger::log_message(QString(__func__));
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     QtSingleApplication::setGraphicsSystem(QLatin1String("raster"));

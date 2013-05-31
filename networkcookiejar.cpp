@@ -20,20 +20,16 @@
 ****************************************************************************/
 
 #include "networkcookiejar.h"
-#include "logger.h"
 
 #include <QDateTime>
 #include <QStringList>
 
 NetworkCookieJar::NetworkCookieJar() : QNetworkCookieJar()
 {
-    Logger::log_message(QString("FUNC_COMPI"));
 }
 
 bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieList, const QUrl & url)
 {
-    Logger::log_message(QString("FUNC_COMPI"));
-
 	QSettings m_settings;
     m_settings.beginGroup("Cookies/" + url.host());
 
@@ -52,8 +48,6 @@ bool NetworkCookieJar::setCookiesFromUrl(const QList<QNetworkCookie> & cookieLis
 
 void NetworkCookieJar::removeAllCookies()
 {
-    Logger::log_message(QString("FUNC_COMPI"));
-
     QSettings m_settings;
 
     m_settings.beginGroup("Cookies");
@@ -64,8 +58,6 @@ void NetworkCookieJar::removeAllCookies()
 
 QList<QNetworkCookie> NetworkCookieJar::cookiesForUrl(const QUrl & url) const
 {
-    Logger::log_message(QString("FUNC_COMPI"));
-
     QList<QNetworkCookie> cookieList;
 
     QSettings m_settings;

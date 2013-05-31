@@ -27,14 +27,11 @@
 #include <QSound>
 
 #include "mainwindow.h"
-#include "logger.h"
 #include "globalsettings.h"
 #include "soundselector.h"
 
 NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(POPUP_NUMBER)
 {
-    Logger::log_message(QString(__func__));
-
     icon = new QImage(":/resource/icon.png");
 
     notificationWidgetQueue = new QQueue<NotificationPopup*>();
@@ -54,8 +51,6 @@ NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(P
 
 NotificationPopupManager::~NotificationPopupManager()
 {
-    Logger::log_message(QString(__func__));
-
     delete icon;
 
     notificationWidgetQueue->clear();
@@ -69,7 +64,6 @@ void NotificationPopupManager::restoreBadgeCounter()
 
 void NotificationPopupManager::setBadgeCounter(const int badgeCounter)
 {
-    Logger::log_message(QString(__func__));
     m_storedBadgeCounter = badgeCounter;
 
     if (badgeCounter == 0)
@@ -93,8 +87,6 @@ void NotificationPopupManager::setBadgeCounter(const int badgeCounter)
 
 void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, int widgetPos)
 {
-    Logger::log_message(QString(__func__));
-
     int heightOffset = 0;
     int currentNrOfPopups = notificationWidgetQueue->count();
     int nrOfVisiblePopups = 0;
@@ -120,8 +112,6 @@ void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, in
 
 void NotificationPopupManager::downloadFinished(int messageId)
 {
-    Logger::log_message(QString(__func__));
-
     if (m_networkReply->error() != QNetworkReply::NoError)
     {
         return;
@@ -181,8 +171,6 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
 int NotificationPopupManager::getSingleOrGroupIndex(bool isGroupMessage)
 {
-    Logger::log_message(QString(__func__));
-
     int playSoundPopup = no_sound;
 
     if (isGroupMessage && currentUserSettings.soundTabData.groupMessageSelector)
@@ -195,8 +183,6 @@ int NotificationPopupManager::getSingleOrGroupIndex(bool isGroupMessage)
 
 int NotificationPopupManager::getSoundNeeded(bool firstPopup, bool isGroupMessage, bool popupMode)
 {
-    Logger::log_message(QString(__func__));
-
     int playSoundPopup = no_sound;
 
     if (popupMode)
@@ -220,8 +206,6 @@ int NotificationPopupManager::getSoundNeeded(bool firstPopup, bool isGroupMessag
 
 void NotificationPopupManager::clearAllMessages()
 {
-    Logger::log_message(QString(__func__));
-
     while(notificationWidgetQueue->count() > 0)
     {
         delete notificationWidgetQueue->first();
@@ -231,8 +215,6 @@ void NotificationPopupManager::clearAllMessages()
 
 void NotificationPopupManager::setNotificationModeOverview(bool enable)
 {
-    Logger::log_message(QString(__func__));
-
     int nrOfItems = notificationWidgetQueue->count();
 
     for (int i = 0; i < nrOfItems; i++)
@@ -268,9 +250,6 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
 void NotificationPopupManager::append(NotificationPopup* widget)
 {
-   Logger::log_message(QString(__func__));
-
-
     if (notificationWidgetQueue->count() == 0)
     {
         m_notificationSummaryWidget.deactivatePopup();
@@ -316,7 +295,6 @@ void NotificationPopupManager::append(NotificationPopup* widget)
 
 void NotificationPopupManager::removeFirst(NotificationPopup *widget)
 {
-    Logger::log_message(QString(__func__));
     widget->hide();
 
     int currentNrOfPopups = notificationWidgetQueue->count();

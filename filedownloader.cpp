@@ -20,12 +20,9 @@
 ****************************************************************************/
 
 #include "filedownloader.h"
-#include "logger.h"
 
 FileDownloader::FileDownloader(QUrl imageUrl, QObject *parent) : QObject(parent)
 {
-    Logger::log_message(QString(__func__));
-
     connect(&m_WebCtrl, SIGNAL(finished(QNetworkReply*)), SLOT(fileDownloaded(QNetworkReply*)));
     QNetworkRequest request(imageUrl);
     m_WebCtrl.get(request);
@@ -33,13 +30,10 @@ FileDownloader::FileDownloader(QUrl imageUrl, QObject *parent) : QObject(parent)
 
 FileDownloader::~FileDownloader()
 {
-    Logger::log_message(QString(__func__));
 }
 
 void FileDownloader::fileDownloaded(QNetworkReply* pReply)
 {
-    Logger::log_message(QString(__func__));
-
     m_DownloadedData = pReply->readAll();   
     pReply->deleteLater();
     emit downloaded();
@@ -47,7 +41,5 @@ void FileDownloader::fileDownloaded(QNetworkReply* pReply)
 
 QByteArray FileDownloader::downloadedData() const
 {
-    Logger::log_message(QString(__func__));
-
     return m_DownloadedData;
 }

@@ -21,7 +21,6 @@
 
 #include "jsinterface.h"
 #include "mainwindow.h"
-#include "logger.h"
 
 #include <QDateTime>
 
@@ -31,21 +30,16 @@
 
 JsInterface::JsInterface(NotificationPopupManager * pnotificationPopupManager,  NetworkCookieJar * pnetworkCookieChar, QObject *parent) : QObject(parent)
 {   
-    Logger::log_message(QString(__func__));
-
     notificationPopupManager = pnotificationPopupManager;
     networkCookieJar = pnetworkCookieChar;
 }
 
 JsInterface::~JsInterface()
 {
-    Logger::log_message(QString(__func__));
 }
 
 void JsInterface::showNotification(const QString & imageUrl, const QString &title, const QString &body, double eventId, int messageId, QString address, double date)
 {
-    Logger::log_message(QString(__func__));
-
     bool isGroupMessage = false;
 
     if ((address != NULL) && (address.length() > 0) && (address[0] == '#'))
@@ -57,34 +51,25 @@ void JsInterface::showNotification(const QString & imageUrl, const QString &titl
 	KdeNotification *notification = new KdeNotification(imageUrl, title, body);
 #else    
     notificationPopupManager->newMessageReceived(imageUrl, title, body, isGroupMessage, messageId, address, dateVal);
-    // MainWindow::instance()->systemTrayIcon()->showMessage(title, body, QSystemTrayIcon::NoIcon, 15000);
 #endif
 }
 
 void JsInterface::setBadgeCounter(const int badgeCounter)
 {
-    Logger::log_message(QString(__func__));
-
     notificationPopupManager->setBadgeCounter(badgeCounter);
 }
 
 void JsInterface::openExternalUrl(const QString &url)
 {
-    Logger::log_message(QString(__func__));
-
     QDesktopServices::openUrl(QUrl::fromEncoded(url.toLocal8Bit()));
 }
 
 void JsInterface::invalidateOAuthLogin()
 {
-    Logger::log_message(QString(__func__));
-
     networkCookieJar->removeAllCookies();
 }
 
 void JsInterface::openSettings()
 {
-    Logger::log_message(QString(__func__));
-
     MainWindow::instance()->settings();
 }

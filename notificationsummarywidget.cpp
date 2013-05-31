@@ -28,7 +28,6 @@
 #include <QString>
 
 #include "mainwindow.h"
-#include "logger.h"
 #include "soundselector.h"
 #include "globalsettings.h"
 
@@ -39,8 +38,6 @@ NotificationSummaryWidget::~NotificationSummaryWidget()
 
 NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(parent)
 {
-    Logger::log_message(QString("FUNC_COMPI"));
-
     setWindowFlags(
         #ifdef Q_OS_UNIX
             Qt::SubWindow | Qt::X11BypassWindowManagerHint | // This type flag is the second point
@@ -109,8 +106,6 @@ void NotificationSummaryWidget::stopTimer()
 
 void NotificationSummaryWidget::mousePressEvent(QMouseEvent *event)
 {
-    Logger::log_message(QString("FUNC_COMPI"));
-
     Qt::MouseButtons mouseButtons = event->buttons();
 
     if(mouseButtons == Qt::LeftButton)

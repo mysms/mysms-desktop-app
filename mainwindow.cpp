@@ -21,7 +21,6 @@
 
 #include "mainwindow.h"
 #include "qtsingleapplication.h"
-#include "logger.h"
 #include "qnetworkaccessmanagercustom.h"
 #include "notificationpopupmanager.h"
 #include "updatedialog.h"
@@ -51,8 +50,6 @@ MainWindow *MainWindow::m_instance = 0;
 
 MainWindow *MainWindow::instance()
 {
-  Logger::log_message(QString(__func__));
-
   if (m_instance == 0)
   {
       m_instance = new MainWindow();      
@@ -63,8 +60,6 @@ MainWindow *MainWindow::instance()
 
 void MainWindow::drop()
 {
-    Logger::log_message(QString(__func__));
-
     if (m_instance != 0)
     {
         delete m_instance;
@@ -74,8 +69,6 @@ void MainWindow::drop()
 
 MainWindow::~MainWindow()
 {
-    Logger::log_message(QString(__func__));
-
     delete m_notificationPopupManager;
     m_notificationPopupManager = NULL;
 
@@ -114,8 +107,6 @@ void MainWindow::updateBadgeCounter(QIcon icon)
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {        
-    Logger::log_message(QString(__func__));  
-
     m_updatedialog = NULL;
     m_tabdialog = NULL;
     m_notificationPopupManager = new NotificationPopupManager();
@@ -217,9 +208,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     if ((listOfProxies.size() > 0) && (listOfProxies[0].type() != QNetworkProxy::NoProxy))
     {
         QNetworkProxy::setApplicationProxy(listOfProxies[0]);        
-
-        Logger::log_message(QString("proxy there"));
-
     }
 
     setCentralWidget(&m_webview);
@@ -237,23 +225,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_inspector->show();
 #endif
 
-    Logger::log_message(QString("load page"));
-
     loadPage();
 }
 
 void MainWindow::checkVersion()
 {
-    Logger::log_message(QString(__func__));
-
     connect(&m_genPurposeNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileReplyFinished(QNetworkReply*)));
     m_genPurposeNetworkManager.get(QNetworkRequest(QUrl(XML_VERSION_FILE_PATH)));
 }
 
 void MainWindow::fileReplyFinished(QNetworkReply * networkReply)
 {
-    Logger::log_message(QString(__func__));
-
     QString version;
     QString data=(QString)networkReply->readAll();
     QXmlStreamReader xml(data);
@@ -293,8 +275,6 @@ void MainWindow::fileReplyFinished(QNetworkReply * networkReply)
 
 void MainWindow::loadPage(QString address)
 {
-    Logger::log_message(QString(__func__));
-
     QUrl url;
 
     if (m_settings.contains(SettingLocale))
@@ -308,22 +288,16 @@ void MainWindow::loadPage(QString address)
 
 QNetworkAccessManager *MainWindow::networkAccessManager()
 {
-    Logger::log_message(QString(__func__));
-
     return m_webview.page()->networkAccessManager();
 }
 
 QSystemTrayIcon *MainWindow::systemTrayIcon()
 {
-    Logger::log_message(QString(__func__));
-
-	return m_trayIcon;
+    return m_trayIcon;
 }
 
 void MainWindow::changeEvent(QEvent *event)
 {
-    Logger::log_message(QString(__func__));
-
     if (event->type() == QEvent::WindowStateChange)
     {
         QWindowStateChangeEvent *qwsc_event = dynamic_cast<QWindowStateChangeEvent*>(event);
@@ -341,8 +315,6 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeWindow(QCloseEvent *event)
 {
-    Logger::log_message(QString(__func__));
-
     userSettingsData data = m_usersettings->GetUserSettingsData();
 
     if(data.commonTabData.showInTaskbarAfterExitSelector)
@@ -360,8 +332,6 @@ void MainWindow::closeWindow(QCloseEvent *event)
 
 void MainWindow::openWindow()
 {
-    Logger::log_message(QString(__func__));
-
     m_notificationPopupManager->clearAllMessages();
     m_notificationPopupManager->setNotificationModeOverview(false);
 
@@ -382,15 +352,11 @@ void MainWindow::openWindow()
 
 bool MainWindow::isWindowClosed()
 {
-    Logger::log_message(QString(__func__));
-
     return ((isHidden()) || (isMinimized()) || (!isActiveWindow()));
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-     Logger::log_message(QString(__func__));
-
      if (m_trayIcon->isVisible())
      {
          if (!m_settings.contains(SettingCloseInfo))
@@ -423,10 +389,6 @@ void MainWindow::singleClick()
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 {
-    Logger::log_message(QString(__func__));
-
-    Logger::log_message(QString("icon activated"));
-
     switch (reason)
     {
         case QSystemTrayIcon::DoubleClick:
@@ -447,8 +409,6 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
 
 void MainWindow::openExternalUrl(QUrl url)
 {
-    Logger::log_message(QString(__func__));
-
     if (url.toString().startsWith(QString(SERVER_URL)))
     {
 		QRegExp rx("locale\\=(\\w\\w)");
@@ -467,8 +427,6 @@ void MainWindow::openExternalUrl(QUrl url)
 
 void MainWindow::addJsObjects()
 {
-     Logger::log_message(QString(__func__));
-
      m_jsInterface = new JsInterface(m_notificationPopupManager, m_networkCookieJar);
 
      m_webview.page()->mainFrame()->addToJavaScriptWindowObject(QString(APPLICATION_NAME), m_jsInterface );
@@ -476,8 +434,6 @@ void MainWindow::addJsObjects()
 
 void MainWindow::saveSettings()
 {
-     Logger::log_message(QString(__func__));
-
      m_settings.setValue(SettingGeometry, geometry());
      m_settings.setValue(SettingWindowState, isMaximized());
      m_settings.sync();
@@ -485,9 +441,7 @@ void MainWindow::saveSettings()
 
 void MainWindow::createActions()
 {
-     Logger::log_message(QString(__func__));
-
-     m_quitAction = new QAction(tr("&Quit"), this);     
+     m_quitAction = new QAction(tr("&Quit"), this);
      connect(m_quitAction, SIGNAL(triggered()), this, SLOT(quit()));
 
      m_refreshAction = new QAction(tr("&Refresh"), this);
@@ -504,8 +458,6 @@ void MainWindow::createActions()
 
 void MainWindow::createTrayIcon()
 {
-     Logger::log_message(QString(__func__));
-
      m_trayIconMenu = new QMenu(this);
 
      m_trayIconMenu->addAction(m_settingsAction);
@@ -520,35 +472,27 @@ void MainWindow::createTrayIcon()
 
 void MainWindow::settings()
 {
-    Logger::log_message(QString(__func__));
-
     m_tabdialog->show();
     m_tabdialog->activateWindow();
 }
 
 void MainWindow::refresh()
 {
-    Logger::log_message(QString(__func__));
     m_webview.reload();
 }
 
 void MainWindow::quit()
 {
-    Logger::log_message(QString(__func__));
-
     saveSettings();
     qApp->quit();
 }
 
 QString WebPage::userAgentForUrl(const QUrl &url ) const
 {
-//    Logger::log_message(QString(__func__));
-
     QString ua = QWebPage::userAgentForUrl(url);    
 
     if (url.toString().indexOf("analytics") >= 0)
         return ua.replace(QRegExp("^\\S*\\s(\\([^\\)]*\\)).*$"), "mysms/" + QtSingleApplication::applicationVersion() + " \\1" );
 
     return ua;
-
 }

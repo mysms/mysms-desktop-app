@@ -59,6 +59,4 @@
 #define UPDATE_LOCALFILE "mysms_install.exe"
 #define XML_VERSION_FILE_PATH "http://www.mysms.com/images/mysms/download/padfiles/mysmspad.xml"
 
-#define LOGFILE_PATH "log.txt"
-
 #endif // GLOBALSETTINGS_H
