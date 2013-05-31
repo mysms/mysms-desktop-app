@@ -57,7 +57,7 @@ private:
 private:   
     QImage* icon;
     QNetworkReply *m_networkReply;
-    QQueue<NotificationPopup *> * notificationWidgetQueue;
+    QQueue<NotificationPopup *> * m_notificationPopupQueue;
 
     NotificationSummaryWidget m_notificationSummaryWidget;
 

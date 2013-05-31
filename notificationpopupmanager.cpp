@@ -34,7 +34,7 @@ NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(P
 {
     icon = new QImage(":/resource/icon.png");
 
-    notificationWidgetQueue = new QQueue<NotificationPopup*>();
+    m_notificationPopupQueue = new QQueue<NotificationPopup*>();
 
     QDesktopWidget* desktopWidget = QApplication::desktop();
     QRect clientRect = desktopWidget->availableGeometry();
@@ -53,8 +53,8 @@ NotificationPopupManager::~NotificationPopupManager()
 {
     delete icon;
 
-    notificationWidgetQueue->clear();
-    delete notificationWidgetQueue;    
+    m_notificationPopupQueue->clear();
+    delete m_notificationPopupQueue;
 }
 
 void NotificationPopupManager::restoreBadgeCounter()
@@ -88,16 +88,16 @@ void NotificationPopupManager::setBadgeCounter(const int badgeCounter)
 void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, int widgetPos)
 {
     int heightOffset = 0;
-    int currentNrOfPopups = notificationWidgetQueue->count();
+    int currentNrOfPopups = m_notificationPopupQueue->count();
     int nrOfVisiblePopups = 0;
 
     if ((currentNrOfPopups > 0) && (widgetPos != 0))
     {
         for(int i = 0; i < currentNrOfPopups; i++)
         {
-            if (notificationWidgetQueue->at(i)->isVisible())
+            if (m_notificationPopupQueue->at(i)->isVisible())
             {
-                heightOffset += (notificationWidgetQueue->at(i)->sizeHint().height() - 10); // overlap popups a bit - they have enough margin
+                heightOffset += (m_notificationPopupQueue->at(i)->sizeHint().height() - 10); // overlap popups a bit - they have enough margin
                 nrOfVisiblePopups++;
 
                 if (nrOfVisiblePopups == widgetPos)
@@ -123,11 +123,11 @@ void NotificationPopupManager::downloadFinished(int messageId)
     QImage imageScale = image->scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     m_networkReply->close();
 
-    for (int i = 0; i < notificationWidgetQueue->count(); i++)
+    for (int i = 0; i < m_notificationPopupQueue->count(); i++)
     {
-        if (notificationWidgetQueue->at(i)->getMessageId() == messageId)
+        if (m_notificationPopupQueue->at(i)->getMessageId() == messageId)
         {
-            notificationWidgetQueue->at(i)->setFaceImage(QPixmap::fromImage(imageScale));
+            m_notificationPopupQueue->at(i)->setFaceImage(QPixmap::fromImage(imageScale));
         }
     }
 }
@@ -138,7 +138,7 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
     UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
 
-    int playSoundIndex = getSoundNeeded(((notificationWidgetQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
+    int playSoundIndex = getSoundNeeded(((m_notificationPopupQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
 
     if (playSoundIndex != no_sound)
     {
@@ -212,23 +212,23 @@ int NotificationPopupManager::getSoundNeeded(bool firstPopup, bool isGroupMessag
 
 void NotificationPopupManager::clearAllMessages()
 {
-    while(notificationWidgetQueue->count() > 0)
+    while(m_notificationPopupQueue->count() > 0)
     {
-        delete notificationWidgetQueue->first();
-        notificationWidgetQueue->dequeue();
+        delete m_notificationPopupQueue->first();
+        m_notificationPopupQueue->dequeue();
     }
 }
 
 void NotificationPopupManager::setNotificationModeOverview(bool enable)
 {
-    int nrOfItems = notificationWidgetQueue->count();
+    int nrOfItems = m_notificationPopupQueue->count();
 
     for (int i = 0; i < nrOfItems; i++)
     {
-        notificationWidgetQueue->at(i)->deactivatePopup();
+        m_notificationPopupQueue->at(i)->deactivatePopup();
     }
 
-    if (notificationWidgetQueue->count() == 0)
+    if (m_notificationPopupQueue->count() == 0)
     {
         m_notificationSummaryWidget.deactivatePopup();
     }
@@ -242,11 +242,11 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
         for (int i = idxFirst; i < nrOfItems; i++)
         {
-            setWidgetGraphicPos(notificationWidgetQueue->at(i), i - idxFirst);
-            notificationWidgetQueue->at(i)->activatePopup();
+            setWidgetGraphicPos(m_notificationPopupQueue->at(i), i - idxFirst);
+            m_notificationPopupQueue->at(i)->activatePopup();
         }
 
-        if (notificationWidgetQueue->count() == 0)
+        if (m_notificationPopupQueue->count() == 0)
         {
             m_notificationSummaryWidget.setGeometry(m_startX, m_startY, m_width, m_height);
             m_notificationSummaryWidget.activatePopup();
@@ -256,21 +256,21 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
 void NotificationPopupManager::append(NotificationPopup* widget)
 {
-    if (notificationWidgetQueue->count() == 0)
+    if (m_notificationPopupQueue->count() == 0)
     {
         m_notificationSummaryWidget.deactivatePopup();
     }
 
     connect(widget, SIGNAL(deleted(NotificationPopup*)), this, SLOT(removeFirst(NotificationPopup*)));    
 
-    int currentNrOfPopups = notificationWidgetQueue->count();
+    int currentNrOfPopups = m_notificationPopupQueue->count();
 
     int nrOfVisiblePopups = 0;
     int firstIndexOfVisiblePopup = 0;
 
     for (int i = 0; i < currentNrOfPopups; i++)
     {
-        if (notificationWidgetQueue->at(i)->isVisible())
+        if (m_notificationPopupQueue->at(i)->isVisible())
         {
             if (nrOfVisiblePopups == 0)
                 firstIndexOfVisiblePopup = i;
@@ -290,36 +290,36 @@ void NotificationPopupManager::append(NotificationPopup* widget)
     {        
         widgetPos = m_maxNotificationPopups - 1;
 
-        notificationWidgetQueue->at(firstIndexOfVisiblePopup)->fadeOut();
+        m_notificationPopupQueue->at(firstIndexOfVisiblePopup)->fadeOut();
         setWidgetGraphicPos(widget, widgetPos);
 
         widget->activatePopup();
     }
 
-    notificationWidgetQueue->enqueue(widget);
+    m_notificationPopupQueue->enqueue(widget);
 }
 
 void NotificationPopupManager::removeFirst(NotificationPopup *widget)
 {
     widget->hide();
 
-    int currentNrOfPopups = notificationWidgetQueue->count();
+    int currentNrOfPopups = m_notificationPopupQueue->count();
 
     int a = 0;
 
     for (int i = 0; i < currentNrOfPopups; i++)
     {
-      if (notificationWidgetQueue->at(i)->isVisible())
+      if (m_notificationPopupQueue->at(i)->isVisible())
       {
-          setWidgetGraphicPos(notificationWidgetQueue->at(i), a);
-          notificationWidgetQueue->at(i)->repaint();
+          setWidgetGraphicPos(m_notificationPopupQueue->at(i), a);
+          m_notificationPopupQueue->at(i)->repaint();
           a++;
       }
     }
 
     if (widget->isItemMarkedToRemoveFromOverview())
     {
-        notificationWidgetQueue->removeOne(widget);
+        m_notificationPopupQueue->removeOne(widget);
         widget->deleteLater();
     }
 }
