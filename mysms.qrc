@@ -15,7 +15,6 @@
         <file alias="read.png">resource/read.png</file>
         <file alias="del.png">resource/del.png</file>
         <file alias="logo.png">resource/logo.png</file>
-        <file alias="closeWhite.png">resource/closeWhite.png</file>
         <file alias="update.png">resource/update.png</file>
         <file alias="opensans.ttf">resource/opensans.ttf</file>
         <file alias="opensans-bold.ttf">resource/opensans-bold.ttf</file>
