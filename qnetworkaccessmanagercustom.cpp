@@ -20,7 +20,6 @@
 ****************************************************************************/
 
 #include "qnetworkaccessmanagercustom.h"
-#include "logger.h"
 
 #include <QUrl>
 #include <QNetworkAccessManager>
