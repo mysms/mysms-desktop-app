@@ -23,16 +23,18 @@
 
 #include <QSound>
 #include <QApplication>
+#include <QDir>
 
 SoundSelector* SoundSelector::mSoundSelector = NULL;
 
-const QString* playList[PLAYLISTSIZE] = {
-                                            new QString("mysms"),
-                                            new QString("bottle-open"), new QString("can-open"),        new QString("coffee-cup"),
-                                            new QString("coin-drop"),   new QString("glass-clink"),
-                                            new QString("page-flip"),   new QString("snap"),            new QString("squeeze-toy"),
-                                            new QString("stamp"),       new QString("zippo-close")
-                                        };
+const QString* playList[PLAYLISTSIZE] =
+{
+    new QString("mysms"),
+    new QString("bottle-open"), new QString("can-open"),        new QString("coffee-cup"),
+    new QString("coin-drop"),   new QString("glass-clink"),
+    new QString("page-flip"),   new QString("snap"),            new QString("squeeze-toy"),
+    new QString("stamp"),       new QString("zippo-close")
+};
 
 SoundSelector::SoundSelector()
 {}
@@ -49,12 +51,16 @@ SoundSelector* SoundSelector::getInstance()
 
 void SoundSelector::playSound(int index)
 {
-    QString myPath = QApplication::applicationDirPath();
+    QString soundsPath = QApplication::applicationDirPath() + "/sounds";
+
+#ifdef Q_OS_LINUX
+    if (!QDir(soundsPath).exists())
+       soundsPath = "/usr/share/sounds/" + QApplication::applicationName();
+#endif
 
     if (index < PLAYLISTSIZE)
     {
-        myPath += "/audio/" + (*playList[index]) + ".wav";
-        QSound::play(myPath);  // QSound has problems with resource dir, therefore absolute path is necessary
+        QSound::play(soundsPath + "/" + (*playList[index]) + ".wav");  // QSound has problems with resource dir, therefore absolute path is necessary
     }
 }
 
