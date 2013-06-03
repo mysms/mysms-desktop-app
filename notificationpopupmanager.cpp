@@ -34,6 +34,8 @@ NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(P
 {
     icon = new QImage(":/resource/icon.png");
 
+    m_downloadFinishedConnected = false;
+    m_networkReplyMap = new QHash<QNetworkReply*, int>();
     m_notificationPopupQueue = new QQueue<NotificationPopup*>();
 
     QDesktopWidget* desktopWidget = QApplication::desktop();
@@ -110,24 +112,34 @@ void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, in
     widget->setGeometry(m_startX, desktopWidget->availableGeometry().height() - widget->sizeHint().height() - heightOffset , m_width, widget->sizeHint().height());
 }
 
-void NotificationPopupManager::downloadFinished(int messageId)
+void NotificationPopupManager::downloadFinished(QNetworkReply *networkReply)
 {
-    if (m_networkReply->error() != QNetworkReply::NoError)
-    {
+    int messageId = m_networkReplyMap->take(networkReply);
+
+    if (messageId == 0)
         return;
-    }
 
-    QImage *image = new QImage();
-    image->loadFromData(m_networkReply->readAll());
-
-    QImage imageScale = image->scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    m_networkReply->close();
+    qDebug() << "download finished for message id";
 
     for (int i = 0; i < m_notificationPopupQueue->count(); i++)
     {
         if (m_notificationPopupQueue->at(i)->getMessageId() == messageId)
         {
-            m_notificationPopupQueue->at(i)->setFaceImage(QPixmap::fromImage(imageScale));
+
+            NotificationPopup *notification = m_notificationPopupQueue->at(i);
+
+            if (networkReply->error() == QNetworkReply::NoError)
+            {
+                QImage *image = new QImage();
+                image->loadFromData(networkReply->readAll());
+
+                QImage imageScale = image->scaled(40, 40, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                networkReply->close();
+                networkReply->deleteLater();
+
+                notification->setFaceImage(QPixmap::fromImage(imageScale));
+            }
+            break;
         }
     }
 }
@@ -158,11 +170,13 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
             if (!imageUrl.isNull())
             {
-                QSignalMapper* signalMapper = new QSignalMapper(this);
-                m_networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
-                connect(m_networkReply, SIGNAL(finished()), signalMapper, SLOT(map()));
-                signalMapper->setMapping(m_networkReply, messageId);
-                connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(downloadFinished(int)));
+                if (!m_downloadFinishedConnected) {
+                    connect(MainWindow::instance()->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
+                    m_downloadFinishedConnected = true;
+                }
+
+                QNetworkReply *networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
+                m_networkReplyMap->insert(networkReply, messageId);
             }
             append(new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date));
         }        

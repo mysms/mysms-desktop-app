@@ -36,7 +36,7 @@ class NotificationPopupManager : QObject
 public slots:
     void removeFirst(NotificationPopup *widget);
     void setNotificationModeOverview(bool enable = false);
-    void downloadFinished(int messageId);
+    void downloadFinished(QNetworkReply *networkReply);
 
 public:
     NotificationPopupManager();
@@ -57,7 +57,8 @@ private:
 
 private:   
     QImage* icon;
-    QNetworkReply *m_networkReply;
+    bool m_downloadFinishedConnected;
+    QHash<QNetworkReply *, int> *m_networkReplyMap;
     QQueue<NotificationPopup *> * m_notificationPopupQueue;
 
     NotificationSummaryWidget m_notificationSummaryWidget;
