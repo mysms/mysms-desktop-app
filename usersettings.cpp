@@ -106,11 +106,11 @@ void UserSettings::saveSettings(UserSettingsData const & passedUserSettingsData)
 
 void UserSettings::setStartup()
 {
+#ifdef Q_OS_WIN
     bool settingToStore = m_userSettingsData.commonTabData.startExecSelector;
 
     loadStartup();
 
-#ifdef Q_OS_WIN
     QSettings settingsTmp(settingsRegistry, QSettings::NativeFormat);
     if (m_userSettingsData.commonTabData.startExecSelector != settingToStore)       // val in registry is different
     {
