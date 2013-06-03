@@ -51,3 +51,26 @@ TRANSLATIONS = translation/mysms_de.ts
 win32:RC_FILE = mysms.rc
 win32:QMAKE_LFLAGS += -static-libgcc
 macx:ICON = mysms.icns
+
+unix {
+    QT += phonon
+
+    PREFIX = /usr
+    BINDIR = $$PREFIX/bin
+    DATADIR =$$PREFIX/share
+
+    DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
+
+    INSTALLS += target desktop sounds icon128
+
+    target.path =$$BINDIR
+
+    desktop.path = $$DATADIR/applications
+    desktop.files += $${TARGET}.desktop
+
+    sounds.path = $$DATADIR/sounds/$$TARGET/
+    sounds.files += sounds/*.wav
+
+    icon128.path = $$DATADIR/icons/hicolor/128x128/apps
+    icon128.files += $${TARGET}-128.png
+}

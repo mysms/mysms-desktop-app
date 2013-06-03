@@ -21,7 +21,14 @@
 
 #include "soundselector.h"
 
-#include <QSound>
+#ifdef Q_OS_LINUX
+    #include <phonon/AudioOutput>
+    #include <phonon/MediaObject>
+    #include <phonon/MediaSource>
+#else
+    #include <QSound>
+#endif
+
 #include <QApplication>
 #include <QDir>
 
@@ -51,16 +58,25 @@ SoundSelector* SoundSelector::getInstance()
 
 void SoundSelector::playSound(int index)
 {
-    QString soundsPath = QApplication::applicationDirPath() + "/sounds";
-
-#ifdef Q_OS_LINUX
-    if (!QDir(soundsPath).exists())
-       soundsPath = "/usr/share/sounds/" + QApplication::applicationName();
-#endif
-
     if (index < PLAYLISTSIZE)
     {
+
+        QString soundsPath = QApplication::applicationDirPath() + "/sounds";
+
+#ifdef Q_OS_LINUX
+        if (!QDir(soundsPath).exists())
+            soundsPath = "/usr/share/sounds/" + QApplication::applicationName();
+
+        Phonon::MediaObject *sound =
+            Phonon::createPlayer(
+                Phonon::MusicCategory,
+                Phonon::MediaSource(soundsPath + "/" + (*playList[index]) + ".wav")
+            );
+        sound->play();
+#else
         QSound::play(soundsPath + "/" + (*playList[index]) + ".wav");  // QSound has problems with resource dir, therefore absolute path is necessary
+#endif
+
     }
 }
 

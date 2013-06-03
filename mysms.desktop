@@ -1,0 +1,20 @@
+[Desktop Entry]
+GenericName=SMS from Computer
+GenericName[de]=Erweiterter Texteditor
+GenericName[es]=Editor de texto avanzado
+GenericName[fr]=Éditeur de texte avancé
+GenericName[it]=Editor di testi avanzato
+Name=mysms
+Name[de]=mysms
+Name[es]=mysms
+Name[fr]=mysms
+Name[it]=mysms
+MimeType=text/plain;
+Exec=mysms
+X-KDE-StartupNotify=true
+X-KDE-HasTempFileOption=true
+Icon=mysms
+Type=Application
+Terminal=false
+InitialPreference=9
+Categories=Qt;KDE;Internet;Chat;
