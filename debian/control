@@ -3,7 +3,7 @@ Section: utils
 Priority: extra
 Maintainer: Gernot Pansy <gernot.pansy@ut11.net>
 Build-Depends: debhelper (>= 8.0.0),
-               libqt4-dev (>> 4.5.0),
+               libqt4-dev (>> 4.7.0),
                libqtwebkit-dev,
                libphonon-dev
 Standards-Version: 3.9.4

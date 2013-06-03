@@ -62,7 +62,7 @@ unix {
 
     DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
 
-    INSTALLS += target desktop sounds icon128
+    INSTALLS += target desktop sounds icon32 icon64 icon128
 
     target.path =$$BINDIR
 
@@ -72,6 +72,12 @@ unix {
     sounds.path = $$DATADIR/sounds/$$TARGET/
     sounds.files += sounds/*.wav
 
+    icon32.path = $$DATADIR/icons/hicolor/32x32/apps
+    icon32.files += resource/32x32/$${TARGET}.png
+
+    icon64.path = $$DATADIR/icons/hicolor/64x64/apps
+    icon64.files += resource/64x64/$${TARGET}.png
+
     icon128.path = $$DATADIR/icons/hicolor/128x128/apps
-    icon128.files += $${TARGET}-128.png
+    icon128.files += resource/128x128/$${TARGET}.png
 }

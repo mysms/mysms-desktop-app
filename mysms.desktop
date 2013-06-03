@@ -1,9 +1,9 @@
 [Desktop Entry]
-GenericName=SMS from Computer
-GenericName[de]=Erweiterter Texteditor
-GenericName[es]=Editor de texto avanzado
-GenericName[fr]=Éditeur de texte avancé
-GenericName[it]=Editor di testi avanzato
+GenericName=Text anywhere, anytime and on any device!
+GenericName[de]=SMS anywhere, anytime and on any device!
+GenericName[es]=SMS anywhere, anytime and on any device!
+GenericName[fr]=SMS anywhere, anytime and on any device!
+GenericName[it]=SMS anywhere, anytime and on any device!
 Name=mysms
 Name[de]=mysms
 Name[es]=mysms
@@ -17,4 +17,4 @@ Icon=mysms
 Type=Application
 Terminal=false
 InitialPreference=9
-Categories=Qt;KDE;Internet;Chat;
+Categories=Qt;KDE;Network;Application;
