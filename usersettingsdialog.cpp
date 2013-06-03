@@ -33,6 +33,7 @@
 #include <QModelIndexList>
 #include <QApplication>
 
+#include "globalsettings.h"
 #include "usersettings.h"
 #include "usersettingsdialog.h"
 #include "soundselector.h"
@@ -115,8 +116,12 @@
  {
      UserSettingsData settingsData = UserSettings::getInstance()->getUserSettingsData();
 
+#ifdef UPDATE_SUPPORTED
      m_startExecSelector.setText(tr("Run mysms on Windows startup"));
      m_startExecSelector.setChecked(settingsData.commonTabData.startExecSelector);
+#else
+     m_startExecSelector.setVisible(false);
+#endif
 
      m_showInTaskbarAfterExitSelector.setText(tr("Show mysms in taskbar"));
      m_showInTaskbarAfterExitSelector.setChecked(settingsData.commonTabData.showInTaskbarAfterExitSelector);
