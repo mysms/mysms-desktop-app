@@ -27,19 +27,16 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include "filedownloader.h"
-
 class UpdateDialog : public QWidget
 {
     Q_OBJECT
 public:
-    explicit UpdateDialog(QWidget *parent = 0);
+    explicit UpdateDialog(QString installerFileName, QWidget *parent = 0);
     ~UpdateDialog();
 
 signals:
 
 private slots:
-    void loadFile();
     void processError(QProcess::ProcessError err);
     void processStarted();
     
@@ -48,7 +45,7 @@ public slots:
     void reject();
     
 private:
-    FileDownloader * m_pFile;
+    QString m_installerFileName;
     QLabel m_updatePic;
     QLabel m_updateText;
     QHBoxLayout m_mainLayout;

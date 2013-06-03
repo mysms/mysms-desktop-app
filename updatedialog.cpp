@@ -26,14 +26,18 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
-#include <QFile>
+#include <QStyle>
+#include <QDesktopWidget>
 #include <QApplication>
 #include <QMessageBox>
 #include <QDir>
 
-UpdateDialog::UpdateDialog(QWidget *parent) : QWidget(parent)
+UpdateDialog::UpdateDialog(QString installerFileName, QWidget *parent) : QWidget(parent)
 {        
-    QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+
+    m_installerFileName = installerFileName;
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
     m_updateText.setText(tr("There is a new version of mysms available"));
 
@@ -54,27 +58,22 @@ UpdateDialog::UpdateDialog(QWidget *parent) : QWidget(parent)
     setLayout(&m_mainLayout);
 
     this->setMinimumSize(280, 100);
-
+    setGeometry(
+        QStyle::alignedRect(
+            Qt::LeftToRight,
+            Qt::AlignCenter,
+            sizeHint(),
+            QApplication::desktop()->availableGeometry(0)
+    ));
     setWindowTitle(tr("Update version"));
     setWindowIcon(QIcon(":/resource/icon.png"));
 
     connect(buttonBox,  SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox,  SIGNAL(rejected()), this, SLOT(reject()));
-
-    QUrl imageUrl(UPDATE_LINK);
-    m_pFile = new FileDownloader(imageUrl, this);
-    connect(m_pFile, SIGNAL(downloaded()), this, SLOT(loadFile()));
-
-    hide();
 }
 
 UpdateDialog::~UpdateDialog()
 {
-    if (m_pFile != NULL)
-    {
-        delete m_pFile;
-        m_pFile = NULL;
-    }
 }
 
 void UpdateDialog::accept()
@@ -83,31 +82,13 @@ void UpdateDialog::accept()
     connect(myProgress, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
     connect(myProgress, SIGNAL(started()), this, SLOT(processStarted()));
 
-    myProgress->start(UPDATE_EXECUTABLE);
+    myProgress->start(m_installerFileName);
     hide();
 }
 
 void UpdateDialog::reject()
 {
     hide();
-}
-
-void UpdateDialog::loadFile()
-{        
-    QFile localFile(QApplication::applicationDirPath() + "\\" + UPDATE_LOCALFILE);
-    
-	if (!localFile.open(QIODevice::WriteOnly))
-        return;
-		
-    localFile.write(m_pFile->downloadedData());
-    localFile.close();
-
-    show();
-    activateWindow();
-
-    disconnect(m_pFile, SIGNAL(downloaded()));
-    m_pFile->deleteLater();
-    m_pFile = NULL;
 }
 
 void UpdateDialog::processError(QProcess::ProcessError err)

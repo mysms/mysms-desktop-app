@@ -81,7 +81,8 @@ protected slots:
     void createTrayIcon();
     void quit();
     void refresh();    
-    void fileReplyFinished(QNetworkReply*);
+    void downloadVersionFileFinished();
+    void downloadInstallerFinished();
     void singleClick();
 
 private:    
@@ -103,13 +104,11 @@ private:
     QMenu *m_trayIconMenu;
     UserSettingsDialog  *m_userSettingsDialog;
 
-    NotificationPopupManager * m_notificationPopupManager;
-    UpdateDialog *    m_updateDialog;
+    NotificationPopupManager *m_notificationPopupManager;
 
-    QNetworkAccessManager m_genPurposeNetworkManager;
-    QWebInspector *   m_inspector;
-    NetworkCookieJar * m_networkCookieJar;
-    JsInterface * m_jsInterface;
+    QWebInspector *m_inspector;
+    NetworkCookieJar *m_networkCookieJar;
+    JsInterface *m_jsInterface;
 
 private slots:
     void addJsObjects();

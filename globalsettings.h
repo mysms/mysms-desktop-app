@@ -54,9 +54,11 @@
     #define SERVER_URL "http://app.mysms.gpa.sms.co.at"
 #endif
 
-#define UPDATE_LINK "http://www.mysms.com/images/mysms/download/mysms-setup.exe"
-#define UPDATE_EXECUTABLE "project_upgrade.exe"
-#define UPDATE_LOCALFILE "mysms_install.exe"
-#define XML_VERSION_FILE_PATH "http://www.mysms.com/images/mysms/download/padfiles/mysmspad.xml"
+#ifdef Q_OS_WIN
+    #define UPDATE_SUPPORTED
+#endif
+#define UPDATE_INSTALLER_URL "http://www.mysms.com/images/mysms/download/mysms-setup.exe"
+#define UPDATE_INSTALLER_FILE_NAME "mysms-setup.exe"
+#define UPDATE_VERSION_FILE_URL "http://www.mysms.com/images/mysms/download/padfiles/mysmspad.xml"
 
 #endif // GLOBALSETTINGS_H

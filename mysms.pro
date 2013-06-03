@@ -26,7 +26,6 @@ SOURCES += networkcookiejar.cpp \
     notificationsummarywidget.cpp \
     updatedialog.cpp \
     soundselector.cpp \
-    filedownloader.cpp \
     webview.cpp \
     usersettingsdialog.cpp
 HEADERS += networkcookiejar.h \
@@ -41,7 +40,6 @@ HEADERS += networkcookiejar.h \
     notificationsummarywidget.h \
     updatedialog.h \
     soundselector.h \
-    filedownloader.h \
     webview.h \
     globalsettings.h \
     usersettingsdialog.h

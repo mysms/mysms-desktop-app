@@ -29,6 +29,8 @@
 #include <QMessageBox>
 #include <QApplication>
 
+#include "globalsettings.h"
+
 QNetworkAccessManagerCustom::QNetworkAccessManagerCustom(QObject *parent) : QNetworkAccessManager(parent)
 {}
 
@@ -49,7 +51,8 @@ QNetworkReply * QNetworkAccessManagerCustom::createRequest ( Operation op, const
     }
 
     QNetworkRequest request = req;
-    if (request.attribute(QNetworkRequest::CacheLoadControlAttribute) == QNetworkRequest::PreferNetwork)
+    if (request.attribute(QNetworkRequest::CacheLoadControlAttribute) == QNetworkRequest::PreferNetwork &&
+            request.url().toString() != UPDATE_INSTALLER_URL)
         request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache);
 
     return QNetworkAccessManager::createRequest (op, request, outgoingData);

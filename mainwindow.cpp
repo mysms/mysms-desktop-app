@@ -71,13 +71,6 @@ MainWindow::~MainWindow()
 {
     delete m_notificationPopupManager;
     m_notificationPopupManager = NULL;
-
-    if (m_updateDialog != NULL)
-    {
-        delete m_updateDialog;
-        m_updateDialog = NULL;
-    }
-
     delete m_trayIconMenu;
     m_trayIconMenu = NULL;
     delete m_trayIcon;
@@ -107,7 +100,6 @@ void MainWindow::updateBadgeCounter(QIcon icon)
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {        
-    m_updateDialog = NULL;
     m_userSettingsDialog = NULL;
     m_notificationPopupManager = new NotificationPopupManager();
     m_lastClickTime = 0;
@@ -232,45 +224,87 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 void MainWindow::checkVersion()
 {
-    connect(&m_genPurposeNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileReplyFinished(QNetworkReply*)));
-    m_genPurposeNetworkManager.get(QNetworkRequest(QUrl(XML_VERSION_FILE_PATH)));
+#ifdef UPDATE_SUPPORTED
+    QNetworkReply *networkReply = networkAccessManager()->get(QNetworkRequest(QUrl(UPDATE_VERSION_FILE_URL)));
+    connect(networkReply, SIGNAL(finished()), this, SLOT(downloadVersionFileFinished()));
+#endif
 }
 
-void MainWindow::fileReplyFinished(QNetworkReply * networkReply)
+void MainWindow::downloadVersionFileFinished()
 {
-    QString version;
-    QString data=(QString)networkReply->readAll();
-    QXmlStreamReader xml(data);
+    QNetworkReply *networkReply = (QNetworkReply *)sender();
+    bool updateAvailable = false;
 
-    while(!xml.atEnd())
-    {
-        xml.readNextStartElement();
-        if(xml.name()=="Program_Version" && !xml.isEndElement())
+    if (networkReply->error() != QNetworkReply::NoError) {
+        qDebug() << "error occured on downloading version file" << networkReply->url() << ":" << networkReply->errorString();
+    } else {
+
+        QString version;
+        QString data = (QString)networkReply->readAll();
+        QXmlStreamReader xml(data);
+
+        while(!xml.atEnd())
         {
-            version = xml.readElementText();
-            break;
-        }
-    }
-
-    if (!version.isEmpty() && (version.length() == versionStringLength) && (version[1] == '.') && (version[3] == '.'))
-    {
-        int majorServerVersion  = version[0].digitValue();
-        int middleServerVersion = version[2].digitValue();
-        int minorServerVersion  = version[4].digitValue();
-
-        if (VERSION_MAJOR < majorServerVersion)
-            m_updateDialog = new UpdateDialog();
-        else if (VERSION_MAJOR == majorServerVersion)
-        {
-            if (VERSION_MIDDLE < middleServerVersion)
-                m_updateDialog = new UpdateDialog();
-            else if (VERSION_MIDDLE == middleServerVersion)
+            xml.readNextStartElement();
+            if(xml.name() == "Program_Version" && !xml.isEndElement())
             {
-                if (VERSION_MINOR < minorServerVersion)
-                    m_updateDialog = new UpdateDialog();
+                version = xml.readElementText();
+                break;
+            }
+        }
+
+        if (!version.isEmpty() && (version.length() == versionStringLength) && (version[1] == '.') && (version[3] == '.'))
+        {
+            int majorServerVersion  = version[0].digitValue();
+            int middleServerVersion = version[2].digitValue();
+            int minorServerVersion  = version[4].digitValue();
+
+            if (VERSION_MAJOR < majorServerVersion)
+                updateAvailable = true;
+            else if (VERSION_MAJOR == majorServerVersion)
+            {
+                if (VERSION_MIDDLE < middleServerVersion)
+                    updateAvailable = true;
+                else if (VERSION_MIDDLE == middleServerVersion)
+                {
+                    if (VERSION_MINOR < minorServerVersion)
+                        updateAvailable = true;
+                }
             }
         }
     }
+
+    disconnect(networkReply, SIGNAL(finished()));
+    networkReply->deleteLater();
+
+    if (updateAvailable)
+    {
+        networkReply = networkAccessManager()->get(QNetworkRequest(QUrl(UPDATE_INSTALLER_URL)));
+        connect(networkReply, SIGNAL(finished()), this, SLOT(downloadInstallerFinished()));
+    }
+}
+
+void MainWindow::downloadInstallerFinished()
+{
+    QNetworkReply *networkReply = (QNetworkReply *)sender();
+    if (networkReply->error() != QNetworkReply::NoError) {
+        qDebug() << "error occured on downloading version file" << networkReply->url() << ":" << networkReply->errorString();
+    } else {
+        QString installerFileName = QDir::tempPath() + "/" + UPDATE_INSTALLER_FILE_NAME;
+        QFile localFile(installerFileName);
+
+        if (localFile.open(QIODevice::WriteOnly))
+        {
+            localFile.write(networkReply->readAll());
+            localFile.close();
+
+            UpdateDialog *updateDialog = new UpdateDialog(installerFileName);
+            updateDialog->show();
+        }
+    }
+
+    disconnect(networkReply, SIGNAL(finished()));
+    networkReply->deleteLater();
 }
 
 void MainWindow::loadPage(QString address)
