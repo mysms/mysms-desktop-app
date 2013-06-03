@@ -104,6 +104,10 @@ void UpdateDialog::loadFile()
 
     show();
     activateWindow();
+
+    disconnect(m_pFile, SIGNAL(downloaded()));
+    m_pFile->deleteLater();
+    m_pFile = NULL;
 }
 
 void UpdateDialog::processError(QProcess::ProcessError err)
