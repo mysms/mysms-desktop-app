@@ -4,8 +4,11 @@
 QT += core \
     gui \
     network \
-    webkit webkitwidgets \
-    widgets
+    webkit
+
+isEqual(QT_MAJOR_VERSION, 5) {
+    QT += webkitwidgets widgets
+}
 
 TARGET = mysms
 TEMPLATE = app
