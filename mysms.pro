@@ -53,6 +53,12 @@ win32:RC_FILE = mysms.rc
 win32:QMAKE_LFLAGS += -static-libgcc
 macx:ICON = mysms.icns
 
+CONFIG(debug, debug|release) {
+} else {
+   DEFINES += QT_NO_DEBUG
+   DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
 unix {
     QT += phonon
 
