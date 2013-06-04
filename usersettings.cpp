@@ -24,9 +24,9 @@
 #include <QApplication>
 #include <QFile>
 
-static const char * const settingsGroup = "SettingsMysms";
+static const char * const settingsGroup = "Settings";
 static const char * const settingsRegistry = "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run";
-static const char * const defaultSettingsWritten = "DefaultSettingsWritten";
+static const char * const settingsInitialized = "initialized";
 
 UserSettings* UserSettings::m_userSettings = NULL;
 
@@ -58,91 +58,78 @@ void UserSettings::saveSettings(UserSettingsData const & passedUserSettingsData)
 
     m_userSettingsData.setTabData(passedUserSettingsData);
 
-    setStartup();
-    //settings.setValue("userSettings.commonTabData.startExecSelector", m_userSettingsData.commonTabData.startExecSelector);
-    m_settings.setValue("userSettings.commonTabData.showInTaskbarAfterExitSelector", m_userSettingsData.commonTabData.showInTaskbarAfterExitSelector);
+    setAutorunEnabled(m_userSettingsData.commonTabData.startExecSelector);
+
+    m_settings.setValue("showInTaskbarAfterExit", m_userSettingsData.commonTabData.showInTaskbarAfterExitSelector);
 
 
-    m_settings.setValue("userSettings.notificationTabData.displayNotificationsSelector", m_userSettingsData.notificationTabData.displayNotificationsSelector );
-    m_settings.setValue("userSettings.notificationTabData.privacyModeNotificationsSelector", m_userSettingsData.notificationTabData.privacyModeNotificationsSelector );
+    m_settings.setValue("notification.displayNotifications", m_userSettingsData.notificationTabData.displayNotificationsSelector );
+    m_settings.setValue("notification.privacyModeNotifications", m_userSettingsData.notificationTabData.privacyModeNotificationsSelector );
 
 
-    m_settings.setValue("userSettings.soundTabData.messageSoundEnable", m_userSettingsData.soundTabData.messageSoundEnable);
-    m_settings.setValue("userSettings.soundTabData.messageSoundOnlyFirst", m_userSettingsData.soundTabData.messageSoundOnlyFirst);
-    m_settings.setValue("userSettings.soundTabData.groupMessageSelector", m_userSettingsData.soundTabData.groupMessageSelector);
-    m_settings.setValue("userSettings.soundTabData.singleMessageSelector", m_userSettingsData.soundTabData.singleMessageSelector);
-    m_settings.setValue("userSettings.soundTabData.singleSoundIndex", m_userSettingsData.soundTabData.singleSoundIndex);
-    m_settings.setValue("userSettings.soundTabData.groupSoundIndex", m_userSettingsData.soundTabData.groupSoundIndex);
+    m_settings.setValue("sound.messageSoundEnable", m_userSettingsData.soundTabData.messageSoundEnable);
+    m_settings.setValue("sound.messageSoundOnlyFirst", m_userSettingsData.soundTabData.messageSoundOnlyFirst);
+    m_settings.setValue("sound.groupMessage", m_userSettingsData.soundTabData.groupMessageSelector);
+    m_settings.setValue("sound.singleMessage", m_userSettingsData.soundTabData.singleMessageSelector);
+    m_settings.setValue("sound.singleSoundIndex", m_userSettingsData.soundTabData.singleSoundIndex);
+    m_settings.setValue("sound.groupSoundIndex", m_userSettingsData.soundTabData.groupSoundIndex);
 
 
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsOpenAutoEnableSelector", m_userSettingsData.shortcutsTabData.mysmsOpenAutoEnableSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsOpenAutoShiftSelector", m_userSettingsData.shortcutsTabData.mysmsOpenAutoShiftSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsOpenAutoCtrlSelector", m_userSettingsData.shortcutsTabData.mysmsOpenAutoCtrlSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsOpenAutoAltSelector", m_userSettingsData.shortcutsTabData.mysmsOpenAutoAltSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsOpenAutoKeyEdit", m_userSettingsData.shortcutsTabData.mysmsOpenAutoKeyEdit);
+    m_settings.setValue("shortcuts.openAutoEnable", m_userSettingsData.shortcutsTabData.mysmsOpenAutoEnableSelector);
+    m_settings.setValue("shortcuts.openAutoShift", m_userSettingsData.shortcutsTabData.mysmsOpenAutoShiftSelector);
+    m_settings.setValue("shortcuts.openAutoCtrl", m_userSettingsData.shortcutsTabData.mysmsOpenAutoCtrlSelector);
+    m_settings.setValue("shortcuts.openAutoAlt", m_userSettingsData.shortcutsTabData.mysmsOpenAutoAltSelector);
+    m_settings.setValue("shortcuts.openAutoKey", m_userSettingsData.shortcutsTabData.mysmsOpenAutoKeyEdit);
 
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsSendEnableSelector", m_userSettingsData.shortcutsTabData.mysmsSendEnableSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsSendShiftSelector", m_userSettingsData.shortcutsTabData.mysmsSendShiftSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsSendCtrlSelector", m_userSettingsData.shortcutsTabData.mysmsSendCtrlSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsSendAltSelector", m_userSettingsData.shortcutsTabData.mysmsSendAltSelector);
-    m_settings.setValue("userSettings.shortcutsTabData.mysmsSendKeyEdit", m_userSettingsData.shortcutsTabData.mysmsSendKeyEdit);
+    m_settings.setValue("shortcuts.mysmsSendEnable", m_userSettingsData.shortcutsTabData.mysmsSendEnableSelector);
+    m_settings.setValue("shortcuts.mysmsSendShift", m_userSettingsData.shortcutsTabData.mysmsSendShiftSelector);
+    m_settings.setValue("shortcuts.mysmsSendCtrl", m_userSettingsData.shortcutsTabData.mysmsSendCtrlSelector);
+    m_settings.setValue("shortcuts.mysmsSendAlt", m_userSettingsData.shortcutsTabData.mysmsSendAltSelector);
+    m_settings.setValue("shortcuts.sendKey", m_userSettingsData.shortcutsTabData.mysmsSendKeyEdit);
 
 
-    m_settings.setValue("userSettings.networkTabData.portNumber", m_userSettingsData.networkTabData.portNumber);
-    m_settings.setValue("userSettings.networkTabData.alternativePortsSelector", m_userSettingsData.networkTabData.alternativePortsSelector);
-    m_settings.setValue("userSettings.networkTabData.proxyRecognitionComboIndex", m_userSettingsData.networkTabData.proxyRecognitionComboIndex);
-    m_settings.setValue("userSettings.networkTabData.hostEdit", m_userSettingsData.networkTabData.hostEdit);
-    m_settings.setValue("userSettings.networkTabData.portEdit", m_userSettingsData.networkTabData.portEdit);
-    m_settings.setValue("userSettings.networkTabData.proxyAuth", m_userSettingsData.networkTabData.proxyAuth);
-    m_settings.setValue("userSettings.networkTabData.userEdit", m_userSettingsData.networkTabData.userEdit);
-    m_settings.setValue("userSettings.networkTabData.passwordEdit", m_userSettingsData.networkTabData.passwordEdit);
-    m_settings.setValue("userSettings.networkTabData.uPnpSelector", m_userSettingsData.networkTabData.uPnpSelector);
+    m_settings.setValue("network.portNumber", m_userSettingsData.networkTabData.portNumber);
+    m_settings.setValue("network.alternativePorts", m_userSettingsData.networkTabData.alternativePortsSelector);
+    m_settings.setValue("network.proxyRecognition", m_userSettingsData.networkTabData.proxyRecognitionComboIndex);
+    m_settings.setValue("network.host", m_userSettingsData.networkTabData.hostEdit);
+    m_settings.setValue("network.port", m_userSettingsData.networkTabData.portEdit);
+    m_settings.setValue("network.proxyAuth", m_userSettingsData.networkTabData.proxyAuth);
+    m_settings.setValue("network.user", m_userSettingsData.networkTabData.userEdit);
+    m_settings.setValue("network.password", m_userSettingsData.networkTabData.passwordEdit);
+    m_settings.setValue("network.uPnp", m_userSettingsData.networkTabData.uPnpSelector);
 
-    m_settings.setValue(defaultSettingsWritten, true);
+    m_settings.setValue(settingsInitialized, true);
 
     m_settings.endGroup();
     m_settings.sync();
 }
 
-void UserSettings::setStartup()
+void UserSettings::setAutorunEnabled(bool enabled)
 {
 #ifdef Q_OS_WIN
-    bool settingToStore = m_userSettingsData.commonTabData.startExecSelector;
-
-    loadStartup();
-
     QSettings settingsTmp(settingsRegistry, QSettings::NativeFormat);
-    if (m_userSettingsData.commonTabData.startExecSelector != settingToStore)       // val in registry is different
+    if (enabled)
     {
-        m_userSettingsData.commonTabData.startExecSelector = settingToStore;
+        QString pathToExec = QApplication::applicationDirPath();
 
-        if (m_userSettingsData.commonTabData.startExecSelector)
-        {
-            QString pathToExec = QApplication::applicationDirPath();
-
-            pathToExec.replace("/", "\\");
-            settingsTmp.setValue("mysms", "\"" + pathToExec + "\\mysms.exe\" min");
-        }
-        else
-        {
-            settingsTmp.remove("mysms");
-        }
+        pathToExec.replace("/", "\\");
+        settingsTmp.setValue("mysms", "\"" + pathToExec + "\\mysms.exe\" min");
+    }
+    else
+    {
+        settingsTmp.remove("mysms");
     }
 #endif
 }
 
-void UserSettings::loadStartup()
+bool UserSettings::autorunEnabled()
 {
 #ifdef Q_OS_WIN
     QSettings settingsTmp(settingsRegistry, QSettings::NativeFormat);
     QString value = settingsTmp.value("mysms").toString();
-
-    if (value.isEmpty())
-        m_userSettingsData.commonTabData.startExecSelector = false;
-    else
-        m_userSettingsData.commonTabData.startExecSelector = true;
+    return value.isEmpty() ? false : true;
 #else
-    m_userSettingsData.commonTabData.startExecSelector = false;
+    return false;
 #endif
 }
 
@@ -150,40 +137,40 @@ void UserSettings::loadSettings()
 {
     m_settings.beginGroup(settingsGroup);
 
-    loadStartup();
-    m_userSettingsData.commonTabData.showInTaskbarAfterExitSelector = m_settings.value("userSettings.commonTabData.showInTaskbarAfterExitSelector").toBool();
+    m_userSettingsData.commonTabData.startExecSelector = autorunEnabled();
+    m_userSettingsData.commonTabData.showInTaskbarAfterExitSelector = m_settings.value("showInTaskbarAfterExitSelector").toBool();
 
-    m_userSettingsData.notificationTabData.displayNotificationsSelector = m_settings.value("userSettings.notificationTabData.displayNotificationsSelector").toBool();
-    m_userSettingsData.notificationTabData.privacyModeNotificationsSelector = m_settings.value("userSettings.notificationTabData.privacyModeNotificationsSelector").toBool();
+    m_userSettingsData.notificationTabData.displayNotificationsSelector = m_settings.value("notification.displayNotifications").toBool();
+    m_userSettingsData.notificationTabData.privacyModeNotificationsSelector = m_settings.value("notification.privacyModeNotifications").toBool();
 
-    m_userSettingsData.soundTabData.messageSoundEnable = m_settings.value("userSettings.soundTabData.messageSoundEnable").toBool();
-    m_userSettingsData.soundTabData.messageSoundOnlyFirst = m_settings.value("userSettings.soundTabData.messageSoundOnlyFirst").toBool();
-    m_userSettingsData.soundTabData.groupMessageSelector = m_settings.value("userSettings.soundTabData.groupMessageSelector").toBool();
-    m_userSettingsData.soundTabData.singleMessageSelector = m_settings.value("userSettings.soundTabData.singleMessageSelector").toBool();
-    m_userSettingsData.soundTabData.singleSoundIndex = m_settings.value("userSettings.soundTabData.singleSoundIndex").toInt();
-    m_userSettingsData.soundTabData.groupSoundIndex = m_settings.value("userSettings.soundTabData.groupSoundIndex").toInt();
+    m_userSettingsData.soundTabData.messageSoundEnable = m_settings.value("sound.messageSoundEnable").toBool();
+    m_userSettingsData.soundTabData.messageSoundOnlyFirst = m_settings.value("sound.messageSoundOnlyFirst").toBool();
+    m_userSettingsData.soundTabData.groupMessageSelector = m_settings.value("sound.groupMessage").toBool();
+    m_userSettingsData.soundTabData.singleMessageSelector = m_settings.value("sound.singleMessage").toBool();
+    m_userSettingsData.soundTabData.singleSoundIndex = m_settings.value("sound.singleSoundIndex").toInt();
+    m_userSettingsData.soundTabData.groupSoundIndex = m_settings.value("sound.groupSoundIndex").toInt();
 
-    m_userSettingsData.shortcutsTabData.mysmsOpenAutoEnableSelector = m_settings.value("userSettings.shortcutsTabData.mysmsOpenAutoEnableSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsOpenAutoShiftSelector = m_settings.value("userSettings.shortcutsTabData.mysmsOpenAutoShiftSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsOpenAutoCtrlSelector = m_settings.value("userSettings.shortcutsTabData.mysmsOpenAutoCtrlSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsOpenAutoAltSelector = m_settings.value("userSettings.shortcutsTabData.mysmsOpenAutoAltSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsOpenAutoKeyEdit = m_settings.value("userSettings.shortcutsTabData.mysmsOpenAutoKeyEdit").toString();
+    m_userSettingsData.shortcutsTabData.mysmsOpenAutoEnableSelector = m_settings.value("shortcuts.openAutoEnable").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsOpenAutoShiftSelector = m_settings.value("shortcuts.openAutoShift").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsOpenAutoCtrlSelector = m_settings.value("shortcuts.openAutoCtrl").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsOpenAutoAltSelector = m_settings.value("shortcuts.openAutoAlt").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsOpenAutoKeyEdit = m_settings.value("shortcuts.openAutoKey").toString();
 
-    m_userSettingsData.shortcutsTabData.mysmsSendEnableSelector = m_settings.value("userSettings.shortcutsTabData.mysmsSendEnableSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsSendShiftSelector = m_settings.value("userSettings.shortcutsTabData.mysmsSendShiftSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsSendCtrlSelector = m_settings.value("userSettings.shortcutsTabData.mysmsSendCtrlSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsSendAltSelector = m_settings.value("userSettings.shortcutsTabData.mysmsSendAltSelector").toBool();
-    m_userSettingsData.shortcutsTabData.mysmsSendKeyEdit = m_settings.value("userSettings.shortcutsTabData.mysmsSendKeyEdit").toString();
+    m_userSettingsData.shortcutsTabData.mysmsSendEnableSelector = m_settings.value("shortcuts.sendEnable").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsSendShiftSelector = m_settings.value("shortcuts.sendShift").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsSendCtrlSelector = m_settings.value("shortcuts.sendCtrl").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsSendAltSelector = m_settings.value("shortcuts.sendAlt").toBool();
+    m_userSettingsData.shortcutsTabData.mysmsSendKeyEdit = m_settings.value("shortcuts.sendKeyEdit").toString();
 
-    m_userSettingsData.networkTabData.portNumber = m_settings.value("userSettings.networkTabData.portNumber").toInt();
-    m_userSettingsData.networkTabData.alternativePortsSelector = m_settings.value("userSettings.networkTabData.alternativePortsSelector").toBool();
-    m_userSettingsData.networkTabData.proxyRecognitionComboIndex = m_settings.value("userSettings.networkTabData.proxyRecognitionComboIndex").toInt();
-    m_userSettingsData.networkTabData.hostEdit = m_settings.value("userSettings.networkTabData.hostEdit").toString();
-    m_userSettingsData.networkTabData.portEdit = m_settings.value("userSettings.networkTabData.portEdit").toString();
-    m_userSettingsData.networkTabData.proxyAuth = m_settings.value("userSettings.networkTabData.proxyAuth").toBool();
-    m_userSettingsData.networkTabData.userEdit = m_settings.value("userSettings.networkTabData.userEdit").toString();
-    m_userSettingsData.networkTabData.passwordEdit = m_settings.value("userSettings.networkTabData.passwordEdit").toString();
-    m_userSettingsData.networkTabData.uPnpSelector = m_settings.value("userSettings.networkTabData.uPnpSelector").toBool();
+    m_userSettingsData.networkTabData.portNumber = m_settings.value("network.portNumber").toInt();
+    m_userSettingsData.networkTabData.alternativePortsSelector = m_settings.value("network.alternativePorts").toBool();
+    m_userSettingsData.networkTabData.proxyRecognitionComboIndex = m_settings.value("network.proxyRecognition").toInt();
+    m_userSettingsData.networkTabData.hostEdit = m_settings.value("network.host").toString();
+    m_userSettingsData.networkTabData.portEdit = m_settings.value("network.port").toString();
+    m_userSettingsData.networkTabData.proxyAuth = m_settings.value("network.proxyAuth").toBool();
+    m_userSettingsData.networkTabData.userEdit = m_settings.value("network.user").toString();
+    m_userSettingsData.networkTabData.passwordEdit = m_settings.value("network.password").toString();
+    m_userSettingsData.networkTabData.uPnpSelector = m_settings.value("network.uPnp").toBool();
 
     m_settings.endGroup();
 }
@@ -197,9 +184,7 @@ void UserSettings::setDefaultData()
 {
     UserSettingsData data;
 
-    removeObsoleteVersionSettings();
-    loadStartup();
-
+    data.commonTabData.startExecSelector = autorunEnabled();
     data.commonTabData.showInTaskbarAfterExitSelector = false; // after exit show in taskbar
 
     data.notificationTabData.displayNotificationsSelector = true;      // show notifications
@@ -237,17 +222,12 @@ void UserSettings::setDefaultData()
     saveSettings(data);
 }
 
-void UserSettings::removeObsoleteVersionSettings()
-{
-    QFile::remove("C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\mysms App.lnk");
-}
-
 bool UserSettings::areSettingsAvailable()
 {
      bool ret = false;
 
      m_settings.beginGroup(settingsGroup);
-     ret = m_settings.value(defaultSettingsWritten).toBool();
+     ret = m_settings.value(settingsInitialized).toBool();
      m_settings.endGroup();
 
      return ret;

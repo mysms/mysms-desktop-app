@@ -104,7 +104,6 @@ public:
     static UserSettings* getInstance();
     void saveSettings(UserSettingsData const & passedUserSettingsData);
     void loadSettings();
-    void removeObsoleteVersionSettings();
     void setDefaultData();
     bool areSettingsAvailable();
 
@@ -114,8 +113,8 @@ private:
     UserSettings();
     ~UserSettings();
 
-    void setStartup();
-    void loadStartup();
+    void setAutorunEnabled(bool enabled);
+    bool autorunEnabled();
 
     static UserSettings* m_userSettings;
 private:
