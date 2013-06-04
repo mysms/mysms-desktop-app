@@ -17,4 +17,4 @@ Icon=mysms
 Type=Application
 Terminal=false
 InitialPreference=9
-Categories=Qt;KDE;Network;Application;
+Categories=Network;Telephony;
