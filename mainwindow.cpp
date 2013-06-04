@@ -168,7 +168,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
 
     QWebSettings::globalSettings()->setAttribute(QWebSettings::DnsPrefetchEnabled, true);
+#if defined(Q_OS_WIN)
+    QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
+#else
     QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, false);
+#endif
     QWebSettings::enablePersistentStorage();
 
     m_webview.settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
