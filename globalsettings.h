@@ -27,7 +27,11 @@
 #define VERSION_MIDDLE      0
 #define VERSION_MINOR       0
 
-#define ORGANIZATION_NAME   "sms.at"
+#ifdef Q_OS_LINUX
+    #define ORGANIZATION_NAME   "mysms"
+#else
+    #define ORGANIZATION_NAME   "sms.at"
+#endif
 #define APPLICATION_NAME    "mysms"
 #define APP_MUTEX_NAME "__mysms__"
 
