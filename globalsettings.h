@@ -29,6 +29,7 @@
 
 #define ORGANIZATION_NAME   "sms.at"
 #define APPLICATION_NAME    "mysms"
+#define APP_MUTEX_NAME "__mysms__"
 
 //////////////////// System definitions ////////////////////
 #define LIVE_SYSTEM

@@ -31,6 +31,14 @@
 #include <QApplication>
 #include <QLocale>
 
+#ifdef Q_OS_WIN
+    #include <qt_windows.h>
+#endif
+
+#if QT_VERSION >= 0x050000
+    #define QT_WA(unicode, ansi) unicode
+#endif
+
 int main(int argc, char *argv[])
 {    
 
@@ -44,8 +52,17 @@ int main(int argc, char *argv[])
     QtSingleApplication app(argc, argv);
 
     if (app.isRunning()) {
+        return app.sendMessage("activate");
+    }
+
+#ifdef Q_OS_WIN
+    Qt::HANDLE mutex;
+    QT_WA( { mutex = CreateMutexW(NULL, FALSE, (TCHAR*)QString(APP_MUTEX_NAME).utf16()); },
+           { mutex = CreateMutexA(NULL, FALSE, QString(mutexName).toLocal8Bit().constData()); } );
+    if (!mutex) {
         return 0;
     }
+#endif
 
     QTranslator translator;
     if (translator.load("mysms", ":/translation"))
@@ -63,5 +80,13 @@ int main(int argc, char *argv[])
 
     int res = app.exec();
     w->drop();
+
+#ifdef Q_OS_WIN
+    if (mutex) {
+        ReleaseMutex(mutex);
+        CloseHandle(mutex);
+    }
+#endif
+
     return res;
 }
