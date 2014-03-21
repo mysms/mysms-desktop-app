@@ -21,7 +21,6 @@
 
 #include "notificationpopup.h"
 
-#include <QSound>
 #include <QApplication>
 #include <QVariant>
 #include <QWebFrame>

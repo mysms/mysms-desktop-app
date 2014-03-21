@@ -21,7 +21,7 @@
 
 #include "soundselector.h"
 
-#ifdef Q_OS_LINUX
+#if defined(Q_OS_LINUX) && QT_VERSION < 0x050000
     #include <phonon/AudioOutput>
     #include <phonon/MediaObject>
     #include <phonon/MediaSource>
@@ -66,7 +66,9 @@ void SoundSelector::playSound(int index)
 #ifdef Q_OS_LINUX
         if (!QDir(soundsPath).exists())
             soundsPath = "/usr/share/sounds/" + QApplication::applicationName();
+#endif
 
+#if defined(Q_OS_LINUX) && QT_VERSION < 0x050000
         Phonon::MediaObject *sound =
             Phonon::createPlayer(
                 Phonon::MusicCategory,

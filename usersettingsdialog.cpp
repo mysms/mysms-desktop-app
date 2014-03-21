@@ -28,7 +28,6 @@
 #include <QIcon>
 #include <QPixmap>
 #include <QPushButton>
-#include <QSound>
 #include <QApplication>
 #include <QModelIndexList>
 #include <QApplication>

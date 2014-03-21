@@ -24,7 +24,6 @@
 #include <QtCore>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QSound>
 
 #include "mainwindow.h"
 #include "globalsettings.h"

@@ -42,7 +42,7 @@
 int main(int argc, char *argv[])
 {    
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && QT_VERSION < 0x050000
     QtSingleApplication::setGraphicsSystem(QLatin1String("raster"));
 #endif
 

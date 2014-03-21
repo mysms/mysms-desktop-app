@@ -7,7 +7,7 @@ QT += core \
     webkit
 
 isEqual(QT_MAJOR_VERSION, 5) {
-    QT += webkitwidgets widgets
+    QT += webkitwidgets widgets multimedia
 }
 
 TARGET = mysms
@@ -60,7 +60,10 @@ CONFIG(debug, debug|release) {
 }
 
 unix {
-    QT += phonon
+
+    isEqual(QT_MAJOR_VERSION, 4) {
+        QT += phonon
+    }
 
     PREFIX = /usr
     BINDIR = $$PREFIX/bin

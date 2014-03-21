@@ -39,7 +39,6 @@
 #define LIVE_SYSTEM
 //#define WEBINSPECTOR
 //#define CACHE_CLEAR
-//#define QT5
 
 //////////////////// Popup definitions /////////////////////
 

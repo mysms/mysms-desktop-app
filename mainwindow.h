@@ -37,9 +37,11 @@
 #include <QWebPage>
 #include <QWebInspector>
 #include <QTimer>
+#include <QSystemTrayIcon>
+#include <QMainWindow>
 
-#ifdef QT5
-    #include <QtWidgets/QtWidgets>
+#if QT_VERSION >= 0x050000
+    #include <QtWidgets>
 #else
     #include <QWidget>
 #endif

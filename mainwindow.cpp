@@ -41,6 +41,11 @@
 #include <QDesktopServices>
 #include <QDesktopWidget>
 
+#if QT_VERSION >= 0x050000
+  #include <QStandardPaths>
+  #include <QtWidgets>
+#endif
+
 static const QString SettingGeometry =     "geometry";
 static const QString SettingWindowState =  "state";
 static const QString SettingCloseInfo =    "closeinfo";
@@ -193,7 +198,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_webview.page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 
     QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
+#if QT_VERSION >= 0x050000
+    diskCache->setCacheDirectory(QStandardPaths::standardLocations(QStandardPaths::CacheLocation).at(0));
+#else
     diskCache->setCacheDirectory(QDesktopServices::storageLocation(QDesktopServices::CacheLocation));
+#endif
     networkAccessManager->setCache(diskCache);
 
 
