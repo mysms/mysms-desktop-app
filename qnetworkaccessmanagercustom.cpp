@@ -20,6 +20,7 @@
 ****************************************************************************/
 
 #include "qnetworkaccessmanagercustom.h"
+#include "networkreplyfilter.h"
 
 #include <QUrl>
 #include <QNetworkAccessManager>
@@ -47,6 +48,11 @@ QNetworkReply * QNetworkAccessManagerCustom::createRequest ( Operation op, const
             request.setUrl(QUrl("data:text/css,"));
 
             return QNetworkAccessManager::createRequest (op, request, outgoingData);
+        }
+
+        if (path.endsWith(QString(".nocache.manifest"))) {
+            QNetworkReply *reply = QNetworkAccessManager::createRequest (op, req, outgoingData);
+            return new NetworkReplyFilter(reply, this);
         }
     }
 

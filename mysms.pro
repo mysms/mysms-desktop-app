@@ -27,7 +27,8 @@ SOURCES += networkcookiejar.cpp \
     updatedialog.cpp \
     soundselector.cpp \
     webview.cpp \
-    usersettingsdialog.cpp
+    usersettingsdialog.cpp \
+    networkreplyfilter.cpp
 HEADERS += networkcookiejar.h \
     mainwindow.h \
     qtsingleapplication.h \
@@ -42,7 +43,8 @@ HEADERS += networkcookiejar.h \
     soundselector.h \
     webview.h \
     globalsettings.h \
-    usersettingsdialog.h
+    usersettingsdialog.h \
+    networkreplyfilter.h
 FORMS +=
 OTHER_FILES += 
 RESOURCES += mysms.qrc
