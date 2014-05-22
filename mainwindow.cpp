@@ -181,11 +181,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QWebSettings::enablePersistentStorage();
 
     m_webview.settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-#if defined(Q_OS_WIN)
-    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, false);
-#else
     m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
-#endif
     m_webview.settings()->setAttribute(QWebSettings::SiteSpecificQuirksEnabled, false);
     m_webview.settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
     m_webview.settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
@@ -542,12 +538,16 @@ void MainWindow::settings()
 
 void MainWindow::refresh()
 {
-    m_webview.reload();
+    // workaround for webkit crash if offline application cache is enabled and reload (m_webview.reload()) is done
+    QUrl url = m_webview.url();
+    m_webview.load(QUrl::fromUserInput("about:blank"));
+    m_webview.load(url);
 }
 
 void MainWindow::quit()
 {
     saveSettings();
+    QWebSettings::clearMemoryCaches();
     qApp->quit();
 }
 
