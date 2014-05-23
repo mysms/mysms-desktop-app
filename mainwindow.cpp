@@ -363,6 +363,7 @@ void MainWindow::changeEvent(QEvent *event)
     if (event->type() == QEvent::WindowStateChange)
     {
         QWindowStateChangeEvent *qwsc_event = dynamic_cast<QWindowStateChangeEvent*>(event);
+
         m_savedWindowState = qwsc_event->oldState();
 
         if(!(this->isWindowClosed()))
@@ -379,12 +380,10 @@ void MainWindow::closeWindow(QCloseEvent *event)
 {
     UserSettingsData data = UserSettings::getInstance()->getUserSettingsData();
 
-    if(data.commonTabData.showInTaskbarAfterExitSelector)
+    if (data.commonTabData.showInTaskbarAfterExitSelector)
         showMinimized();
     else
         hide();
-
-    raise();        
 
     if (event != NULL)
     {
@@ -401,7 +400,7 @@ void MainWindow::openWindow()
     {
         raise();
         show();
-        setWindowState(m_savedWindowState | Qt::WindowActive);
+        setWindowState(m_savedWindowState);
     }
 
 #ifdef Q_OS_WIN
