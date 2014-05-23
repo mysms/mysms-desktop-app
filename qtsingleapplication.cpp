@@ -43,7 +43,6 @@
 #include "qtlocalpeer.h"
 #include <QWidget>
 
-
 /*!
     \class QtSingleApplication qtsingleapplication.h
     \brief The QtSingleApplication class provides an API to detect and
@@ -324,6 +323,7 @@ void QtSingleApplication::activateWindow()
 {
     if (actWin) {
         actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
+        actWin->show();
         actWin->raise();
         actWin->activateWindow();
     }
