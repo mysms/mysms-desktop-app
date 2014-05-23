@@ -54,18 +54,19 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
 
     m_displayWidget.setGeometry(0, 0, width(), height());
     m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
-
+    m_displayWidget.installEventFilter(this);
 
     m_numberOfMessagesText.setText(tr("No new messages"));
     m_numberOfMessagesText.setStyleSheet("QLabel { color: #030303; font-weight: bold; font-size: 12px; }");
 
     m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
-    m_closeButton.setMaximumSize(20,20);
-    m_closeButton.setStyleSheet("QPushButton { border: none; }");
+    m_closeButton.setMaximumSize(21,21);
+    m_closeButton.setStyleSheet("QPushButton { border: none }");
     m_closeButton.setToolTip(tr("Close pop-up"));
+    m_closeButton.installEventFilter(this);
+    m_closeButton.setCursor(Qt::PointingHandCursor);
 
     connect(&m_closeButton, SIGNAL(clicked()), this, SLOT(hide()));
-
 
     m_innerLayout.addWidget(&m_numberOfMessagesText,1, Qt::AlignCenter );
     m_innerLayout.addWidget(&m_closeButton,0, Qt::AlignTop | Qt::AlignRight);
@@ -114,4 +115,24 @@ void NotificationSummaryWidget::mousePressEvent(QMouseEvent *event)
         if (mainWindow->isWindowClosed())
             mainWindow->openWindow();
     }
+}
+
+bool NotificationSummaryWidget::eventFilter(QObject *obj, QEvent *event)
+{
+
+    if (event->type() == QEvent::Enter)
+    {
+        if (obj == &m_displayWidget)
+            stopTimer();
+        else if (obj == &m_closeButton)
+            m_closeButton.setIcon(QIcon(QPixmap(":/resource/close-hover.png")));
+    }
+    else if (event->type() == QEvent::Leave)
+    {
+        if (obj == &m_displayWidget)
+            startTimer(POPUP_HOVER_FADEOUT_TIME);
+        else if (obj == &m_closeButton)
+            m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
+    }
+    return QObject::eventFilter(obj, event);
 }

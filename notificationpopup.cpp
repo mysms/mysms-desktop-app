@@ -64,24 +64,27 @@ NotificationPopup::NotificationPopup(QPixmap pixmapIcon, QString headerText, QSt
     m_displayWidget.installEventFilter(this);
 
     m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
-    m_closeButton.setMaximumSize(20,20);
-    m_closeButton.setStyleSheet("QPushButton { border: none;  }");
+    m_closeButton.setMaximumSize(21,21);
+    m_closeButton.setStyleSheet("QPushButton { border: none; }");
     m_closeButton.setToolTip(tr("Close pop-up"));
     m_closeButton.installEventFilter(this);
+    m_closeButton.setCursor(Qt::PointingHandCursor);
     connect(&m_closeButton, SIGNAL(clicked()), this, SLOT(fadeOut()));
 
     m_readButton.setIcon(QIcon(QPixmap(":/resource/read.png")));
-    m_readButton.setMaximumSize(20,20);
-    m_readButton.setStyleSheet("QPushButton { border: none;   }");
+    m_readButton.setMaximumSize(21,21);
+    m_readButton.setStyleSheet("QPushButton { border: none; }");
     m_readButton.setToolTip(tr("Mark message as read"));
     m_readButton.installEventFilter(this);
+    m_readButton.setCursor(Qt::PointingHandCursor);
     connect(&m_readButton, SIGNAL(clicked()), this, SLOT(messageRead()));
 
     m_delButton.setIcon(QIcon(QPixmap(":/resource/del.png")));
-    m_delButton.setMaximumSize(20,20);
-    m_delButton.setStyleSheet("QPushButton { border: none;  }");
+    m_delButton.setMaximumSize(21,21);
+    m_delButton.setStyleSheet("QPushButton { border: none; }");
     m_delButton.setToolTip(tr("Delete message"));
     m_delButton.installEventFilter(this);
+    m_delButton.setCursor(Qt::PointingHandCursor);
     connect(&m_delButton, SIGNAL(clicked()), this, SLOT(messageDelete()));
 
     m_icon.setPixmap(pixmapIcon);

@@ -41,6 +41,7 @@ public:
     void deactivatePopup();
 
 protected:
+    bool eventFilter(QObject *obj, QEvent *event);
     void mousePressEvent(QMouseEvent *event);
 
 private:
