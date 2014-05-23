@@ -61,6 +61,12 @@ CONFIG(debug, debug|release) {
    DEFINES += QT_NO_DEBUG_OUTPUT
 }
 
+win32 {
+    isEqual(QT_MAJOR_VERSION, 5) {
+        QT += winextras
+    }
+}
+
 unix {
 
     isEqual(QT_MAJOR_VERSION, 4) {

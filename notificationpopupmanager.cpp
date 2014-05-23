@@ -73,17 +73,7 @@ void NotificationPopupManager::setBadgeCounter(const int badgeCounter)
         clearAllMessages();
     }
 
-    QIcon *icon;
-    if (badgeCounter > 9)
-        icon = new QIcon(":/resource/icon-9.png");
-    else if (badgeCounter == 0)
-        icon = new QIcon(":/resource/icon.png");
-    else
-        icon = new QIcon(QString(":/resource/icon-%1.png").arg(badgeCounter));
-
-    MainWindow::instance()->updateBadgeCounter(*icon);
-
-    delete icon;
+    MainWindow::instance()->updateBadgeCounter(badgeCounter);
 }
 
 void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, int widgetPos)

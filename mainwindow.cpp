@@ -95,12 +95,29 @@ MainWindow::~MainWindow()
 #endif
 }
 
-void MainWindow::updateBadgeCounter(QIcon icon)
+void MainWindow::updateBadgeCounter(const int badgeCounter)
 {
-    m_icon = icon;
+
+    QIcon icon;
+    if (badgeCounter > 9)
+        icon = QIcon(":/resource/icon-9.png");
+    else if (badgeCounter == 0)
+        icon = m_icon;
+    else
+        icon = QIcon(QString(":/resource/icon-%1.png").arg(badgeCounter));
 
     QWidget::setWindowIcon(icon);
     m_trayIcon->setIcon(icon);
+
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+    if (badgeCounter == 0) {
+        m_taskBarButton->clearOverlayIcon();
+    } else {
+        m_taskBarButton->setOverlayIcon(icon);
+    }
+#endif
+
+    delete icon;
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -126,6 +143,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     QWidget::setWindowIcon(m_icon);
     setWindowTitle(tr("mysms"));
+
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+    m_taskBarButton = new QWinTaskbarButton(this);
+    m_taskBarButton->setWindow(this->windowHandle());
+#endif
 
     createActions();
     createTrayIcon();

@@ -48,6 +48,10 @@
 
 #include <QtCore>
 
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+  #include <QWinTaskbarButton>
+#endif
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -65,7 +69,7 @@ public:
     void closeWindow(QCloseEvent *event);
     void loadPage(QString address = "");
     void checkVersion();
-    void updateBadgeCounter(QIcon icon);
+    void updateBadgeCounter(const int badgeCounter);
 
 protected:
     void changeEvent(QEvent *event);
@@ -111,6 +115,10 @@ private:
     QWebInspector *m_inspector;
     NetworkCookieJar *m_networkCookieJar;
     JsInterface *m_jsInterface;
+
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+    QWinTaskbarButton *m_taskBarButton;
+#endif
 
 private slots:
     void addJsObjects();
