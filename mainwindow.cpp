@@ -173,7 +173,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
 
     QWebSettings::globalSettings()->setAttribute(QWebSettings::DnsPrefetchEnabled, true);
-#if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN) && QT_VERSION < 0x050000
     QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, true);
 #else
     QWebSettings::globalSettings()->setAttribute(QWebSettings::PluginsEnabled, false);
