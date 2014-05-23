@@ -138,7 +138,7 @@ void UserSettings::loadSettings()
     m_settings.beginGroup(settingsGroup);
 
     m_userSettingsData.commonTabData.startExecSelector = autorunEnabled();
-    m_userSettingsData.commonTabData.showInTaskbarAfterExitSelector = m_settings.value("showInTaskbarAfterExitSelector").toBool();
+    m_userSettingsData.commonTabData.showInTaskbarAfterExitSelector = m_settings.value("showInTaskbarAfterExit").toBool();
 
     m_userSettingsData.notificationTabData.displayNotificationsSelector = m_settings.value("notification.displayNotifications").toBool();
     m_userSettingsData.notificationTabData.privacyModeNotificationsSelector = m_settings.value("notification.privacyModeNotifications").toBool();
