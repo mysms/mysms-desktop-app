@@ -185,7 +185,7 @@ void UserSettings::setDefaultData()
     UserSettingsData data;
 
     data.commonTabData.startExecSelector = autorunEnabled();
-    data.commonTabData.showInTaskbarAfterExitSelector = false; // after exit show in taskbar
+    data.commonTabData.showInTaskbarAfterExitSelector = true; // after exit show in taskbar
 
     data.notificationTabData.displayNotificationsSelector = true;      // show notifications
     data.notificationTabData.privacyModeNotificationsSelector = false; // message text
