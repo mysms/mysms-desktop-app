@@ -116,8 +116,6 @@ void MainWindow::updateBadgeCounter(const int badgeCounter)
         m_taskBarButton->setOverlayIcon(icon);
     }
 #endif
-
-    delete icon;
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
@@ -209,7 +207,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_webview.settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
     m_webview.settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
     m_webview.settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
-    m_webview.setContextMenuPolicy(Qt::NoContextMenu);
 
     QNetworkAccessManagerCustom *networkAccessManager = new QNetworkAccessManagerCustom(this);
     m_webview.page()->setNetworkAccessManager(networkAccessManager);

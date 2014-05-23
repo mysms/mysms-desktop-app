@@ -31,14 +31,16 @@ class WebView: public QWebView
     Q_OBJECT
 
 public:
-    WebView(QWidget *p = 0): QWebView(p){}
+    WebView(QWidget *parent = 0);
     QWebView *createWindow(QWebPage::WebWindowType type);
 
 public slots:
     void closeMyWindow();
 
-private:
-    QWebView *webView;
+private slots:
+    void downloadRequested(const QNetworkRequest &);
+    void downloadFinished();
+
 };
 
 #endif // WEBVIEW_H

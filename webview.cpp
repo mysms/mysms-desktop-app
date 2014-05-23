@@ -21,25 +21,81 @@
 
 #include "webview.h"
 
+#include <QAction>
+#include <QFileDialog>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+
+WebView::WebView(QWidget *parent) : QWebView(parent)
+{
+    QWebPage *page = this->page();
+    connect(page, SIGNAL(downloadRequested(QNetworkRequest)), this, SLOT(downloadRequested(QNetworkRequest)));
+
+    page->action(QWebPage::Reload)->setVisible(false);
+    page->action(QWebPage::OpenFrameInNewWindow)->setVisible(false);
+    page->action(QWebPage::OpenImageInNewWindow)->setVisible(false);
+    page->action(QWebPage::CopyImageUrlToClipboard)->setVisible(false);
+}
+
 QWebView * WebView::createWindow(QWebPage::WebWindowType type)
 {
-    webView = new QWebView;
-    QWebPage *newWeb = new QWebPage(webView);
+    QWebView *webView = new QWebView;
+    QWebPage *page = new QWebPage(webView);
 
     if (type == QWebPage::WebModalDialog)
         webView->setWindowModality(Qt::ApplicationModal);
 
     webView->setAttribute(Qt::WA_DeleteOnClose, true);
 
-    webView->setPage(newWeb);
-    connect(newWeb, SIGNAL(windowCloseRequested()), this, SLOT(closeMyWindow()));
+    webView->setPage(page);
+    connect(page, SIGNAL(windowCloseRequested()), this, SLOT(closeMyWindow()));
+    connect(page, SIGNAL(downloadRequested(QNetworkRequest)), this, SLOT(downloadRequested(QNetworkRequest)));
 
-    webView->showMaximized();
+    page->action(QWebPage::Reload)->setVisible(false);
+    page->action(QWebPage::OpenFrameInNewWindow)->setVisible(false);
+    page->action(QWebPage::OpenImageInNewWindow)->setVisible(false);
+    page->action(QWebPage::CopyImageUrlToClipboard)->setVisible(false);
 
     return webView;
 }
 
 void WebView::closeMyWindow()
 {
+    QWebView *webView = ((QWebView*)sender()->parent());
     webView->close();
+}
+
+void WebView::downloadRequested(const QNetworkRequest &request)
+{
+
+#if QT_VERSION >= 0x050000
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+#else
+    QString dir =  QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
+#endif
+
+    QString defaultFileName = request.url().fileName();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), dir + "/" + defaultFileName);
+    if (fileName.isEmpty())
+        return;
+
+    QNetworkRequest newRequest = request;
+    newRequest.setAttribute(QNetworkRequest::User, fileName);
+
+    QNetworkAccessManager *networkManager = this->page()->networkAccessManager();
+    QNetworkReply *reply = networkManager->get(newRequest);
+    connect(reply, SIGNAL(finished()), this, SLOT(downloadFinished()));
+}
+
+void WebView::downloadFinished()
+{
+    QNetworkReply *reply = ((QNetworkReply*)sender());
+    QNetworkRequest request = reply->request();
+    QVariant v = request.attribute(QNetworkRequest::User);
+    QString fileName = v.toString();
+    QFile file(fileName);
+    if (file.open(QFile::ReadWrite)) {
+        file.write(reply->readAll());
+        file.close();
+    }
 }
