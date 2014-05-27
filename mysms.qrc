@@ -21,6 +21,7 @@
         <file alias="close-hover.png">resource/close-hover.png</file>
         <file alias="del-hover.png">resource/del-hover.png</file>
         <file alias="read-hover.png">resource/read-hover.png</file>
+        <file alias="notification-disabled.png">resource/notification-disabled.png</file>
     </qresource>
     <qresource prefix="/translation" lang="de">
         <file alias="mysms">translation/mysms_de.qm</file>

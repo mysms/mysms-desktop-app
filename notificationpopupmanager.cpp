@@ -137,38 +137,41 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 {   
     qDebug() << "new message arrived from" << headerText << "message:" << messageText;
 
-    UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
+    if (!MainWindow::instance()->isNotificationDisabled()) {
 
-    int playSoundIndex = getSoundNeeded(((m_notificationPopupQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
+        UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
 
-    if (playSoundIndex != no_sound)
-    {
-        SoundSelector * soundSelector = SoundSelector::getInstance();
+        int playSoundIndex = getSoundNeeded(((m_notificationPopupQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
 
-        soundSelector->playSound(playSoundIndex);
-    }
-
-    if (MainWindow::instance()->isWindowClosed())       // only show notifications when main window is minimized
-    {        
-        if (userSettingsData.notificationTabData.displayNotificationsSelector)
+        if (playSoundIndex != no_sound)
         {
-            if (userSettingsData.notificationTabData.privacyModeNotificationsSelector)
-                messageText = "";
+            SoundSelector * soundSelector = SoundSelector::getInstance();
 
-            qDebug() << "show new notification popup";
+            soundSelector->playSound(playSoundIndex);
+        }
 
-            if (!imageUrl.isNull())
+        if (MainWindow::instance()->isWindowClosed())       // only show notifications when main window is minimized
+        {
+            if (userSettingsData.notificationTabData.displayNotificationsSelector)
             {
-                if (!m_downloadFinishedConnected) {
-                    connect(MainWindow::instance()->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
-                    m_downloadFinishedConnected = true;
-                }
+                if (userSettingsData.notificationTabData.privacyModeNotificationsSelector)
+                    messageText = "";
 
-                QNetworkReply *networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
-                m_networkReplyMap->insert(networkReply, messageId);
+                qDebug() << "show new notification popup";
+
+                if (!imageUrl.isNull())
+                {
+                    if (!m_downloadFinishedConnected) {
+                        connect(MainWindow::instance()->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
+                        m_downloadFinishedConnected = true;
+                    }
+
+                    QNetworkReply *networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
+                    m_networkReplyMap->insert(networkReply, messageId);
+                }
+                append(new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date));
             }
-            append(new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date));
-        }        
+        }
     }
 }
 

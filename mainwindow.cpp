@@ -50,6 +50,7 @@ static const QString SettingGeometry =     "geometry";
 static const QString SettingWindowState =  "state";
 static const QString SettingCloseInfo =    "closeinfo";
 static const QString SettingLocale =       "locale";
+static const QString SettingNotificationDisabledUntil = "notificationDisabled";
 static const int versionStringLength = 5;
 MainWindow *MainWindow::m_instance = 0;
 
@@ -480,6 +481,10 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason)
             }
             break;
 
+        case QSystemTrayIcon::Context:
+                updateTrayIconMenu();
+                break;
+
         default:
             break;
     }
@@ -528,6 +533,22 @@ void MainWindow::createActions()
      m_settingsAction = new QAction(tr("&Settings"), this);
      connect(m_settingsAction, SIGNAL(triggered()), this, SLOT(settings()));
 
+     m_notificationDisable30m = new QAction(tr("hide for 30 minutes"), this);
+     connect(m_notificationDisable30m, SIGNAL(triggered()), this, SLOT(disableNotifications()));
+
+     m_notificationDisable1h = new QAction(tr("hide for 1 hour"), this);
+     connect(m_notificationDisable1h, SIGNAL(triggered()), this, SLOT(disableNotifications()));
+
+     m_notificationDisable3h = new QAction(tr("hide for 3 hour"), this);
+     connect(m_notificationDisable3h, SIGNAL(triggered()), this, SLOT(disableNotifications()));
+
+     m_notificationDisable8h = new QAction(tr("hide for 8 hour"), this);
+     connect(m_notificationDisable8h, SIGNAL(triggered()), this, SLOT(disableNotifications()));
+
+     m_notificationDisabled = new QAction(tr("Notifications disabled"), this);
+     m_notificationDisabled->setIcon(QIcon(QPixmap(":/resource/notification-disabled.png")));
+     connect(m_notificationDisabled, SIGNAL(triggered()), this, SLOT(enableNotifications()));
+
     /* rfu
      QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+Shift+o"), this);
      connect(shortcut, SIGNAL(activated()), this, SLOT(shortcut_Ctrl_O()));
@@ -538,14 +559,35 @@ void MainWindow::createTrayIcon()
 {
      m_trayIconMenu = new QMenu(this);
 
+     m_notificationMenu = new QMenu(tr("Notifications"), this);
+     m_notificationMenu->addAction(m_notificationDisable30m);
+     m_notificationMenu->addAction(m_notificationDisable1h);
+     m_notificationMenu->addAction(m_notificationDisable3h);
+     m_notificationMenu->addAction(m_notificationDisable8h);
+     m_trayIconMenu->addMenu(m_notificationMenu);
+     m_trayIconMenu->addAction(m_notificationDisabled);
+     m_trayIconMenu->addSeparator();
+
      m_trayIconMenu->addAction(m_settingsAction);
      m_trayIconMenu->addAction(m_refreshAction);
-     m_trayIconMenu->addAction(m_quitAction);     
+     m_trayIconMenu->addAction(m_quitAction);
 
      m_trayIcon = new QSystemTrayIcon(this);
      m_trayIcon->setContextMenu(m_trayIconMenu);
      m_trayIcon->setIcon(m_icon);          
      m_trayIcon->show();
+}
+
+void MainWindow::updateTrayIconMenu()
+{
+    if (isNotificationDisabled())
+    {
+        m_notificationMenu->menuAction()->setVisible(false);
+        m_notificationDisabled->setVisible(true);
+    } else {
+        m_notificationMenu->menuAction()->setVisible(true);
+        m_notificationDisabled->setVisible(false);
+    }
 }
 
 void MainWindow::settings()
@@ -567,6 +609,35 @@ void MainWindow::quit()
     saveSettings();
     QWebSettings::clearMemoryCaches();
     qApp->quit();
+}
+
+bool MainWindow::isNotificationDisabled()
+{
+    return m_settings.contains(SettingNotificationDisabledUntil)
+            && m_settings.value(SettingNotificationDisabledUntil).toLongLong() > QDateTime::currentMSecsSinceEpoch();
+}
+
+void MainWindow::disableNotifications()
+{
+    qint64 timespan = 30 * 60 * 1000;
+    if (sender() == m_notificationDisable1h) {
+       timespan = 60 * 60 * 1000;
+    } else if (sender() == m_notificationDisable3h) {
+        timespan = 3 * 60 * 60 * 1000;
+    } else if (sender() == m_notificationDisable8h) {
+        timespan = 8 * 60 * 60 * 1000;
+    }
+
+    qDebug() << "disable notifications for " << timespan << " millis";
+
+    m_settings.setValue(SettingNotificationDisabledUntil, QDateTime::currentMSecsSinceEpoch() + timespan);
+    m_settings.sync();
+}
+
+void MainWindow::enableNotifications()
+{
+    m_settings.remove(SettingNotificationDisabledUntil);
+    m_settings.sync();
 }
 
 QString WebPage::userAgentForUrl(const QUrl &url ) const

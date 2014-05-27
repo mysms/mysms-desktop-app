@@ -70,6 +70,7 @@ public:
     void loadPage(QString address = "");
     void checkVersion();
     void updateBadgeCounter(const int badgeCounter);
+    bool isNotificationDisabled();
 
 protected:
     void changeEvent(QEvent *event);
@@ -85,8 +86,11 @@ protected slots:
     void saveSettings();
     void createActions();
     void createTrayIcon();
+    void updateTrayIconMenu();
     void quit();
-    void refresh();    
+    void refresh();
+    void disableNotifications();
+    void enableNotifications();
     void downloadVersionFileFinished();
     void downloadInstallerFinished();
     void singleClick();
@@ -105,6 +109,12 @@ private:
     QAction *m_quitAction;
     QAction *m_refreshAction;
     QAction *m_settingsAction;
+    QMenu *m_notificationMenu;
+    QAction *m_notificationDisable30m;
+    QAction *m_notificationDisable1h;
+    QAction *m_notificationDisable3h;
+    QAction *m_notificationDisable8h;
+    QAction *m_notificationDisabled;
 
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_trayIconMenu;
