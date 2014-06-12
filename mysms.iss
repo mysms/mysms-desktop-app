@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "mysms"
-#define MyAppVersion "2.0.0"
+#define MyAppVersion "2.1.0"
 #define MyAppPublisher "Up to Eleven Digital Solutions GmbH"
 #define MyAppCompany "sms.at"
 #define MyAppURL "http://www.mysms.com/"
@@ -32,6 +32,8 @@ Compression=lzma
 SolidCompression=yes
 SetupIconFile=mysms-setup.ico
 UsePreviousTasks=yes
+DisableDirPage=auto
+DisableProgramGroupPage=auto
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -52,17 +54,47 @@ Name: "autoRunRegistry"; Description: "{cm:StartAppAtStartup}"; GroupDescription
 [Files]
 Source: "release\mysms.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "sounds\*.wav"; DestDir: "{app}\sounds"; Flags: ignoreversion
-Source: "{#QTDIR}\bin\QtCore4.dll"; DestDir: "{app}"; 
-Source: "{#QTDIR}\bin\QtGui4.dll"; DestDir: "{app}";
-Source: "{#QTDIR}\bin\QtNetwork4.dll"; DestDir: "{app}";
-Source: "{#QTDIR}\bin\QtWebKit4.dll"; DestDir: "{app}";
-Source: "{#QTDIR}\bin\libeay32.dll"; DestDir: "{app}";
-Source: "{#QTDIR}\bin\ssleay32.dll"; DestDir: "{app}";
-Source: "{#QTDIR}\lib\qt4\plugins\codecs\q*codecs4.dll"; DestDir: "{app}\codecs\";
-Source: "{#QTDIR}\lib\qt4\plugins\imageformats\qgif4.dll"; DestDir: "{app}\imageformats\";
-Source: "{#QTDIR}\lib\qt4\plugins\imageformats\qjpeg4.dll"; DestDir: "{app}\imageformats\";
+Source: "{#QTDIR}\bin\Qt5Core.dll"; DestDir: "{app}"; 
+Source: "{#QTDIR}\bin\Qt5Gui.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Multimedia.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Network.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5WebKit.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5WebKitWidgets.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Widgets.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5WinExtras.dll"; DestDir: "{app}";
+; Webkit dependencies
+Source: "{#QTDIR}\bin\Qt5OpenGL.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Qml.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Quick.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Sensors.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Sql.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5Positioning.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5PrintSupport.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\Qt5MultimediaWidgets.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\icudt52.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\icuin52.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\icuuc52.dll"; DestDir: "{app}";
+
+Source: "{#QTDIR}\bin\libstdc++-6.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\libwinpthread-1.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}";
+Source: "{#QTDIR}\plugins\platforms\qwindows.dll"; DestDir: "{app}\platforms\";
+Source: "{#QTDIR}\plugins\imageformats\qgif.dll"; DestDir: "{app}\imageformats\";
+Source: "{#QTDIR}\plugins\imageformats\qjpeg.dll"; DestDir: "{app}\imageformats\";
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+[InstallDelete]
+Type: filesandordirs; Name: "{localappdata}\{#MyAppCompany}\{#MyAppName}\cache"
+Type: files; Name: "{app}\libeay32.dll"
+Type: files; Name: "{app}\ssleay32.dll"
+Type: files; Name: "{app}\QtCore4.dll"
+Type: files; Name: "{app}\QtGui4.dll"
+Type: files; Name: "{app}\QtNetwork4.dll"
+Type: files; Name: "{app}\QtWebkit4.dll"
+Type: filesandordirs; Name: "{app}\codecs"
+Type: files; Name: "{app}\imageformats\qgif4.dll"
+Type: files; Name: "{app}\imageformats\qjpeg4.dll"
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
