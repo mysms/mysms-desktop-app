@@ -56,7 +56,7 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
     m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
     m_displayWidget.installEventFilter(this);
 
-    m_numberOfMessagesText.setText(tr("No new messages"));
+    m_numberOfMessagesText.setText(tr("Compose new message"));
     m_numberOfMessagesText.setStyleSheet("QLabel { color: #030303; font-weight: bold; font-size: 12px; }");
 
     m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
@@ -114,6 +114,8 @@ void NotificationSummaryWidget::mousePressEvent(QMouseEvent *event)
 
         if (mainWindow->isWindowClosed())
             mainWindow->openWindow();
+
+        mainWindow->loadPage("#compose");
     }
 }
 

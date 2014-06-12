@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
@@ -116,8 +116,8 @@
     </message>
     <message>
         <location filename="notificationsummarywidget.cpp" line="38"/>
-        <source>No new messages</source>
-        <translation>Keine neuen Nachrichten</translation>
+        <source>Compose new message</source>
+        <translation>Neue Nachricht erstellen</translation>
     </message>
     <message>
         <location filename="notificationsummarywidget.cpp" line="44"/>
