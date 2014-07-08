@@ -41,6 +41,8 @@ public:
 
     void activatePopup();
     void deactivatePopup();
+    void activateFadeOut();
+    void deactivateFadeOut();
     void setFaceImage(QPixmap pixmapIcon);
     int  getMessageId() const;
     bool isItemMarkedToRemoveFromOverview() const;
@@ -81,6 +83,8 @@ private:
 
 signals:
     void deleted(NotificationPopup*);
+    void hover(NotificationPopup*);
+    void unhover(NotificationPopup*);
 
 public slots:
     void fadeOut();

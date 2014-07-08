@@ -267,7 +267,9 @@ void NotificationPopupManager::append(NotificationPopup* widget)
         m_notificationSummaryWidget.deactivatePopup();
     }
 
-    connect(widget, SIGNAL(deleted(NotificationPopup*)), this, SLOT(removeFirst(NotificationPopup*)));    
+    connect(widget, SIGNAL(deleted(NotificationPopup*)), this, SLOT(removeFirst(NotificationPopup*)));
+    connect(widget, SIGNAL(hover(NotificationPopup*)), this, SLOT(popupHovered()));
+    connect(widget, SIGNAL(unhover(NotificationPopup*)), this, SLOT(popupUnhovered()));
 
     int currentNrOfPopups = m_notificationPopupQueue->count();
 
@@ -302,6 +304,10 @@ void NotificationPopupManager::append(NotificationPopup* widget)
         widget->activatePopup();
     }
 
+    if (m_popupsHovered) {
+        widget->deactivateFadeOut();
+    }
+
     m_notificationPopupQueue->enqueue(widget);
 }
 
@@ -328,4 +334,36 @@ void NotificationPopupManager::removeFirst(NotificationPopup *widget)
         m_notificationPopupQueue->removeOne(widget);
         widget->deleteLater();
     }
+}
+
+void NotificationPopupManager::popupHovered()
+{
+
+    int currentNrOfPopups = m_notificationPopupQueue->count();
+
+    for (int i = 0; i < currentNrOfPopups; i++)
+    {
+      NotificationPopup *popup = m_notificationPopupQueue->at(i);
+      if (popup->isVisible()) {
+          popup->deactivateFadeOut();
+      }
+    }
+
+    m_popupsHovered = true;
+}
+
+void NotificationPopupManager::popupUnhovered()
+{
+
+    int currentNrOfPopups = m_notificationPopupQueue->count();
+
+    for (int i = 0; i < currentNrOfPopups; i++)
+    {
+      NotificationPopup *popup = m_notificationPopupQueue->at(i);
+      if (popup->isVisible()) {
+          popup->activateFadeOut();
+      }
+    }
+
+    m_popupsHovered = false;
 }

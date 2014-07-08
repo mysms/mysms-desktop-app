@@ -37,6 +37,8 @@ public slots:
     void removeFirst(NotificationPopup *widget);
     void setNotificationModeOverview(bool enable = false);
     void downloadFinished(QNetworkReply *networkReply);
+    void popupHovered();
+    void popupUnhovered();
 
 public:
     NotificationPopupManager();
@@ -71,6 +73,7 @@ private:
     int m_maxNotificationPopups;
     int m_storedBadgeCounter;
     bool m_notificationOverview;
+    bool m_popupsHovered;
 };
 
 #endif // NOTIFICATIONPOPUPMANAGER_H

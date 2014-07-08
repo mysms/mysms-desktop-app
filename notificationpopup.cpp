@@ -202,6 +202,16 @@ void NotificationPopup::deactivatePopup()
     stopTimer();
 }
 
+void NotificationPopup::activateFadeOut()
+{
+    startTimer(POPUP_HOVER_FADEOUT_TIME);
+}
+
+void NotificationPopup::deactivateFadeOut()
+{
+    stopTimer();
+}
+
 void NotificationPopup::startTimer(int time)
 {
     m_timeout.start(time);
@@ -218,7 +228,7 @@ bool NotificationPopup::eventFilter(QObject *obj, QEvent *event)
     if (event->type() == QEvent::Enter)
     {
         if (obj == &m_displayWidget)
-            stopTimer();
+            emit hover(this);
         else if (obj == &m_closeButton)
             m_closeButton.setIcon(QIcon(QPixmap(":/resource/close-hover.png")));
         else if (obj == &m_readButton)
@@ -229,7 +239,7 @@ bool NotificationPopup::eventFilter(QObject *obj, QEvent *event)
     else if (event->type() == QEvent::Leave)
     {
         if (obj == &m_displayWidget)
-            startTimer(POPUP_HOVER_FADEOUT_TIME);
+            emit unhover(this);
         else if (obj == &m_closeButton)
             m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
         else if (obj == &m_readButton)
