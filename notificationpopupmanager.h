@@ -56,6 +56,7 @@ private:
     void setWidgetGraphicPos(NotificationPopup* widget, int widgetPos);
     int getSoundNeeded(bool firstPopup, bool isGroupMessage, bool popupMode);
     int getSingleOrGroupIndex(bool isGroupMessage);
+    void updatePopupPosition(bool updateWidgets);
 
 private:   
     QImage* icon;
@@ -66,8 +67,8 @@ private:
     NotificationSummaryWidget m_notificationSummaryWidget;
 
     int m_deltaY;
-    int m_startX;
-    int m_startY;
+    int m_endX;
+    int m_endY;
     int m_width;
     int m_height;
     int m_maxNotificationPopups;

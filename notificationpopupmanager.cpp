@@ -37,14 +37,8 @@ NotificationPopupManager::NotificationPopupManager() : m_maxNotificationPopups(P
     m_networkReplyMap = new QHash<QNetworkReply*, int>();
     m_notificationPopupQueue = new QQueue<NotificationPopup*>();
 
-    QDesktopWidget* desktopWidget = QApplication::desktop();
-    QRect clientRect = desktopWidget->availableGeometry();
-
     m_width  = 400;
     m_height = 80;
-
-    m_startX = clientRect.left() + clientRect.width() - m_width;
-    m_startY = clientRect.top() + clientRect.height() - m_height;
 
     m_storedBadgeCounter = 0;
     m_notificationOverview = false;
@@ -97,8 +91,7 @@ void NotificationPopupManager::setWidgetGraphicPos(NotificationPopup* widget, in
         }
     }
 
-    QDesktopWidget* desktopWidget = QApplication::desktop();
-    widget->setGeometry(m_startX, desktopWidget->availableGeometry().height() - widget->sizeHint().height() - heightOffset , m_width, widget->sizeHint().height());
+    widget->setGeometry(m_endX - m_width, m_endY - widget->sizeHint().height() - heightOffset , m_width, widget->sizeHint().height());
 }
 
 void NotificationPopupManager::downloadFinished(QNetworkReply *networkReply)
@@ -241,6 +234,9 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
     if (enable)     // show last items
     {
+
+        updatePopupPosition(false);
+
         int idxFirst = nrOfItems - m_maxNotificationPopups;
 
         if (idxFirst < 0)
@@ -254,7 +250,7 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
         if (m_notificationPopupQueue->count() == 0)
         {
-            m_notificationSummaryWidget.setGeometry(m_startX, m_startY, m_width, m_height);
+            m_notificationSummaryWidget.setGeometry(m_endX - m_width, m_endY - m_height, m_width, m_height);
             m_notificationSummaryWidget.activatePopup();
         }
     }
@@ -262,6 +258,9 @@ void NotificationPopupManager::setNotificationModeOverview(bool enable)
 
 void NotificationPopupManager::append(NotificationPopup* widget)
 {
+
+    updatePopupPosition(true);
+
     if (m_notificationPopupQueue->count() == 0)
     {
         m_notificationSummaryWidget.deactivatePopup();
@@ -313,6 +312,9 @@ void NotificationPopupManager::append(NotificationPopup* widget)
 
 void NotificationPopupManager::removeFirst(NotificationPopup *widget)
 {
+
+    updatePopupPosition(false);
+
     widget->hide();
 
     int currentNrOfPopups = m_notificationPopupQueue->count();
@@ -366,4 +368,29 @@ void NotificationPopupManager::popupUnhovered()
     }
 
     m_popupsHovered = false;
+}
+
+void NotificationPopupManager::updatePopupPosition(bool updateWidgets) {
+    QDesktopWidget* desktopWidget = QApplication::desktop();
+    QRect clientRect = desktopWidget->availableGeometry(&m_notificationSummaryWidget);
+    int newEndX = clientRect.left() + clientRect.width();
+    int newEndY = clientRect.top() + clientRect.height();
+
+    if (newEndX != m_endX || newEndY != m_endY) {
+
+        if (updateWidgets) {
+            int currentNrOfPopups = m_notificationPopupQueue->count();
+
+            for (int i = 0; i < currentNrOfPopups; i++) {
+                NotificationPopup *popup = m_notificationPopupQueue->at(i);
+                if (popup->isVisible()) {
+                    setWidgetGraphicPos(popup, i);
+                    popup->repaint();
+                }
+            }
+        }
+
+        m_endX = newEndX;
+        m_endY = newEndY;
+    }
 }
