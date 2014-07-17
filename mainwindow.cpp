@@ -168,15 +168,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         if (m_settings.contains(SettingGeometry))
         {
             QDesktopWidget* desktopWidget = QApplication::desktop();
-            QRect clientRect = desktopWidget->availableGeometry();
-            int nrOfScreens = desktopWidget->numScreens();
-
-            if (nrOfScreens > 1)
-            {
-               QRect clientRect2 = desktopWidget->availableGeometry(1);
-               clientRect.setRight(clientRect2.right());
-            }
-
+            QRect clientRect = desktopWidget->availableGeometry(this);
             QRect storedRect = m_settings.value(SettingGeometry).toRect();
 
             if (storedRect.right() > clientRect.right())
