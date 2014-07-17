@@ -70,11 +70,14 @@ int main(int argc, char *argv[])
 
     MainWindow *w = MainWindow::instance();
     app.setActivationWindow(w);
+    app.setQuitOnLastWindowClosed(false);
 
     if ((argc == 2) && (QString(argv[1]) == QString("min")))
         w->closeWindow(NULL);
     else
         w->show();
+
+    QObject::connect(&app, SIGNAL(quitRequest()), w, SLOT(quit()));
 
     w->checkVersion();
 

@@ -79,6 +79,7 @@ protected:
 
 public slots:
     void settings();
+    void quit();
 
 protected slots:
     void iconActivated(QSystemTrayIcon::ActivationReason reason);
@@ -87,7 +88,6 @@ protected slots:
     void createActions();
     void createTrayIcon();
     void updateTrayIconMenu();
-    void quit();
     void refresh();
     void disableNotifications();
     void enableNotifications();

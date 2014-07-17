@@ -43,6 +43,10 @@
 
 #include <QApplication>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 class QtLocalPeer;
 
 #if defined(Q_OS_WIN)
@@ -95,9 +99,15 @@ public Q_SLOTS:
 Q_SIGNALS:
     void messageReceived(const QString &message);
 
+signals:
+    void quitRequest();
+
 
 private:
     void sysInit(const QString &appId = QString());
+#ifdef Q_OS_WIN
+    bool winEventFilter(MSG* msg, long* result);
+#endif
     QtLocalPeer *peer;
     QWidget *actWin;
 };
