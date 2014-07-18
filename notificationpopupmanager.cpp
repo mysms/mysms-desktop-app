@@ -130,9 +130,9 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 {   
     qDebug() << "new message arrived from" << headerText << "message:" << messageText;
 
-    if (!MainWindow::instance()->isNotificationDisabled()) {
+    UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
 
-        UserSettingsData userSettingsData = UserSettings::getInstance()->getUserSettingsData();
+    if (!MainWindow::instance()->isNotificationDisabled()) {
 
         int playSoundIndex = getSoundNeeded(((m_notificationPopupQueue->count() == 0) && (m_storedBadgeCounter == 0)) , isGroupMessage, MainWindow::instance()->isWindowClosed());
 
@@ -142,27 +142,33 @@ void NotificationPopupManager::newMessageReceived(const QString &imageUrl, QStri
 
             soundSelector->playSound(playSoundIndex);
         }
+    }
 
-        if (MainWindow::instance()->isWindowClosed())       // only show notifications when main window is minimized
+    if (MainWindow::instance()->isWindowClosed())       // only show notifications when main window is minimized
+    {
+        if (userSettingsData.notificationTabData.displayNotificationsSelector)
         {
-            if (userSettingsData.notificationTabData.displayNotificationsSelector)
+            if (userSettingsData.notificationTabData.privacyModeNotificationsSelector)
+                messageText = "";
+
+            qDebug() << "show new notification popup";
+
+            if (!imageUrl.isNull())
             {
-                if (userSettingsData.notificationTabData.privacyModeNotificationsSelector)
-                    messageText = "";
-
-                qDebug() << "show new notification popup";
-
-                if (!imageUrl.isNull())
-                {
-                    if (!m_downloadFinishedConnected) {
-                        connect(MainWindow::instance()->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
-                        m_downloadFinishedConnected = true;
-                    }
-
-                    QNetworkReply *networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
-                    m_networkReplyMap->insert(networkReply, messageId);
+                if (!m_downloadFinishedConnected) {
+                    connect(MainWindow::instance()->networkAccessManager(), SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
+                    m_downloadFinishedConnected = true;
                 }
-                append(new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date));
+
+                QNetworkReply *networkReply = MainWindow::instance()->networkAccessManager()->get(QNetworkRequest(QUrl(imageUrl)));
+                m_networkReplyMap->insert(networkReply, messageId);
+            }
+
+            NotificationPopup *popup = new NotificationPopup(QPixmap::fromImage(icon->scaled(0, 0, Qt::KeepAspectRatio, Qt::SmoothTransformation)), headerText, messageText, isGroupMessage, messageId, address, date);
+            if (!MainWindow::instance()->isNotificationDisabled()) {
+                append(popup);
+            } else {
+                appendSilent(popup);
             }
         }
     }
@@ -266,10 +272,6 @@ void NotificationPopupManager::append(NotificationPopup* widget)
         m_notificationSummaryWidget.deactivatePopup();
     }
 
-    connect(widget, SIGNAL(deleted(NotificationPopup*)), this, SLOT(removeFirst(NotificationPopup*)));
-    connect(widget, SIGNAL(hover(NotificationPopup*)), this, SLOT(popupHovered()));
-    connect(widget, SIGNAL(unhover(NotificationPopup*)), this, SLOT(popupUnhovered()));
-
     int currentNrOfPopups = m_notificationPopupQueue->count();
 
     int nrOfVisiblePopups = 0;
@@ -306,6 +308,16 @@ void NotificationPopupManager::append(NotificationPopup* widget)
     if (m_popupsHovered) {
         widget->deactivateFadeOut();
     }
+
+    appendSilent(widget);
+}
+
+void NotificationPopupManager::appendSilent(NotificationPopup* widget)
+{
+
+    connect(widget, SIGNAL(deleted(NotificationPopup*)), this, SLOT(removeFirst(NotificationPopup*)));
+    connect(widget, SIGNAL(hover(NotificationPopup*)), this, SLOT(popupHovered()));
+    connect(widget, SIGNAL(unhover(NotificationPopup*)), this, SLOT(popupUnhovered()));
 
     m_notificationPopupQueue->enqueue(widget);
 }

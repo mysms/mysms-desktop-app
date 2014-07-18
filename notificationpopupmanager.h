@@ -44,7 +44,8 @@ public:
     NotificationPopupManager();
     ~NotificationPopupManager();
 
-    void append(NotificationPopup *widget);    
+    void append(NotificationPopup *widget);
+    void appendSilent(NotificationPopup *widget);
     void newMessageReceived(const QString &imageUrl, QString headerText, QString messageText, bool isGroupMessage, int messageId, QString address, QDateTime date);
     void clearAllMessages();
     void setBadgeCounter(const int badgeCounter);
