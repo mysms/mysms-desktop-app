@@ -51,6 +51,7 @@ static const QString SettingWindowState =  "state";
 static const QString SettingCloseInfo =    "closeinfo";
 static const QString SettingLocale =       "locale";
 static const QString SettingNotificationDisabledUntil = "notificationDisabled";
+static const QString SettingVersion =     "version";
 static const int versionStringLength = 5;
 MainWindow *MainWindow::m_instance = 0;
 
@@ -180,6 +181,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
             resize(qMin(QApplication::desktop()->width(), 960), qMin(QApplication::desktop()->height(), 800));
     }
 
+    if (!m_settings.contains(SettingVersion)
+            || m_settings.value(SettingVersion).toString().compare(QtSingleApplication::applicationVersion()) != 0) {
+
+        // we need delete the cache dir on upgrades (at least from qt4)
+#if QT_VERSION >= 0x050000
+        QDir *cacheDir = new QDir(QStandardPaths::standardLocations(QStandardPaths::CacheLocation).at(0));
+        if (cacheDir->exists()) {
+            cacheDir->removeRecursively();
+        }
+#endif
+
+        m_settings.setValue(SettingVersion, QtSingleApplication::applicationVersion());
+        m_settings.sync();
+    }
+
+    m_webview = new WebView(this);
+
 #ifdef CACHE_CLEAR
     QWebSettings::clearMemoryCaches();
     m_webview.settings()->clearMemoryCaches();
@@ -193,17 +211,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
     QWebSettings::enablePersistentStorage();
 
-    m_webview.settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::SiteSpecificQuirksEnabled, false);
-    m_webview.settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
-    m_webview.settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
-    m_webview.settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
+    m_webview->settings()->setAttribute(QWebSettings::LocalStorageEnabled, true);
+    m_webview->settings()->setAttribute(QWebSettings::OfflineWebApplicationCacheEnabled, true);
+    m_webview->settings()->setAttribute(QWebSettings::SiteSpecificQuirksEnabled, false);
+    m_webview->settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
+    m_webview->settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
+    m_webview->settings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+    m_webview->settings()->setAttribute(QWebSettings::JavascriptCanCloseWindows, true);
 
     QNetworkAccessManagerCustom *networkAccessManager = new QNetworkAccessManagerCustom(this);
-    m_webview.page()->setNetworkAccessManager(networkAccessManager);
-    m_webview.page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
+    m_webview->page()->setNetworkAccessManager(networkAccessManager);
+    m_webview->page()->setLinkDelegationPolicy(QWebPage::DelegateExternalLinks);
 
     QNetworkDiskCache *diskCache = new QNetworkDiskCache(this);
 #if QT_VERSION >= 0x050000
@@ -225,10 +243,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
         QNetworkProxy::setApplicationProxy(listOfProxies[0]);        
     }
 
-    setCentralWidget(&m_webview);
+    setCentralWidget(m_webview);
 
-    connect(&m_webview, SIGNAL(linkClicked(QUrl)), SLOT(openExternalUrl(QUrl)));
-    connect(m_webview.page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(addJsObjects()));
+    connect(m_webview, SIGNAL(linkClicked(QUrl)), SLOT(openExternalUrl(QUrl)));
+    connect(m_webview->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(addJsObjects()));
     connect(m_trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(iconActivated(QSystemTrayIcon::ActivationReason)));    
     connect(&m_clickDelayTimer, SIGNAL(timeout()), this, SLOT(singleClick()));
 
@@ -337,13 +355,13 @@ void MainWindow::loadPage(QString address)
     else
         url = QUrl::fromUserInput(QString(SERVER_URL) + address);
 
-    if (m_webview.url() != url)
-        m_webview.load(url);
+    if (m_webview->url() != url)
+        m_webview->load(url);
 }
 
 QNetworkAccessManager *MainWindow::networkAccessManager()
 {
-    return m_webview.page()->networkAccessManager();
+    return m_webview->page()->networkAccessManager();
 }
 
 QSystemTrayIcon *MainWindow::systemTrayIcon()
@@ -494,7 +512,7 @@ void MainWindow::openExternalUrl(QUrl url)
 			m_settings.setValue(SettingLocale, locale);
 		}
 
-		m_webview.load(url);
+        m_webview->load(url);
     }
     else
 		QDesktopServices::openUrl(url);
@@ -504,7 +522,7 @@ void MainWindow::addJsObjects()
 {
      m_jsInterface = new JsInterface(m_notificationPopupManager, m_networkCookieJar);
 
-     m_webview.page()->mainFrame()->addToJavaScriptWindowObject(QString(APPLICATION_NAME), m_jsInterface );
+     m_webview->page()->mainFrame()->addToJavaScriptWindowObject(QString(APPLICATION_NAME), m_jsInterface );
  }
 
 void MainWindow::saveSettings()
@@ -591,9 +609,9 @@ void MainWindow::settings()
 void MainWindow::refresh()
 {
     // workaround for webkit crash if offline application cache is enabled and reload (m_webview.reload()) is done
-    QUrl url = m_webview.url();
-    m_webview.load(QUrl::fromUserInput("about:blank"));
-    m_webview.load(url);
+    QUrl url = m_webview->url();
+    m_webview->load(QUrl::fromUserInput("about:blank"));
+    m_webview->load(url);
 }
 
 void MainWindow::quit()

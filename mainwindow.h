@@ -62,7 +62,7 @@ public:
     QNetworkAccessManager *networkAccessManager();
     QSystemTrayIcon *systemTrayIcon();
 
-    WebView m_webview;
+    WebView *m_webview;
 
     bool isWindowClosed();
     void openWindow();

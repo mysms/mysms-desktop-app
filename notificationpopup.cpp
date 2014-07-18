@@ -165,7 +165,7 @@ void NotificationPopup::fadeOut()
 void NotificationPopup::messageDelete()
 {
     QString mycall = QString("messageService.deleteMessage(" + QString::number(m_messageId) + ",'" + m_address + "'," + QString("false") + ")");
-    MainWindow::instance()->m_webview.page()->mainFrame()->evaluateJavaScript(mycall);
+    MainWindow::instance()->m_webview->page()->mainFrame()->evaluateJavaScript(mycall);
 
     m_markedRemoveFromOverview = true;
     fadeOut();
@@ -179,7 +179,7 @@ bool NotificationPopup::isItemMarkedToRemoveFromOverview() const
 void NotificationPopup::messageRead()
 {
     QString mycall = QString("messageService.markMessageRead(%1, '%2')").arg(QString::number(m_messageId), m_address);
-    MainWindow::instance()->m_webview.page()->mainFrame()->evaluateJavaScript(mycall);
+    MainWindow::instance()->m_webview->page()->mainFrame()->evaluateJavaScript(mycall);
 
     m_markedRemoveFromOverview = true;
     fadeOut();
