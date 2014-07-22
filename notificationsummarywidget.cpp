@@ -56,8 +56,15 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
     m_displayWidget.setStyleSheet(".QWidget { background-color: rgba(255, 255, 255, 100%); border-width: 0px; border-style: solid; border-radius: 2px; border-color: #CCCCCC; } .QWidget:hover {  border-width: 2px; border-style: solid; border-radius: 2px; border-color: #2ec1e6; }");
     m_displayWidget.installEventFilter(this);
 
-    m_numberOfMessagesText.setText(tr("Compose new message"));
-    m_numberOfMessagesText.setStyleSheet("QLabel { color: #030303; font-weight: bold; font-size: 12px; }");
+    m_newMessageIcon.setPixmap(QPixmap(":/resource/new-message.png"));
+
+    m_newMessageText.setText(tr("Compose new message"));
+    m_newMessageText.setStyleSheet("QLabel { color: #030303; font-weight: bold; font-size: 12px; }");
+
+    m_newMessageLayout.addStretch(1);
+    m_newMessageLayout.addWidget(&m_newMessageIcon, 0, Qt::AlignLeft | Qt::AlignHCenter );
+    m_newMessageLayout.addWidget(&m_newMessageText, 0, Qt::AlignLeft | Qt::AlignHCenter );
+    m_newMessageLayout.addStretch(1);
 
     m_closeButton.setIcon(QIcon(QPixmap(":/resource/close.png")));
     m_closeButton.setMaximumSize(21,21);
@@ -68,8 +75,8 @@ NotificationSummaryWidget::NotificationSummaryWidget(QWidget *parent) : QWidget(
 
     connect(&m_closeButton, SIGNAL(clicked()), this, SLOT(hide()));
 
-    m_innerLayout.addWidget(&m_numberOfMessagesText,1, Qt::AlignCenter );
-    m_innerLayout.addWidget(&m_closeButton,0, Qt::AlignTop | Qt::AlignRight);
+    m_innerLayout.addLayout(&m_newMessageLayout, 0);
+    m_innerLayout.addWidget(&m_closeButton, 0, Qt::AlignTop | Qt::AlignRight);
 
     m_displayWidget.setLayout(&m_innerLayout);
 

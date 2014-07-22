@@ -51,10 +51,12 @@ private:
     // graphic elements
     QWidget     m_displayWidget;
     QVBoxLayout m_containerLayout;
-    QLabel      m_numberOfMessagesText;
     QHBoxLayout m_innerLayout;
     QGraphicsDropShadowEffect m_shadow;
     QPushButton  m_closeButton;
+    QHBoxLayout m_newMessageLayout;
+    QLabel      m_newMessageText;
+    QLabel      m_newMessageIcon;
 
     QTimer m_timeout;
 };
