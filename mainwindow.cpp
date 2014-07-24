@@ -546,16 +546,16 @@ void MainWindow::createActions()
      m_settingsAction = new QAction(tr("&Settings"), this);
      connect(m_settingsAction, SIGNAL(triggered()), this, SLOT(settings()));
 
-     m_notificationDisable30m = new QAction(tr("hide for 30 minutes"), this);
+     m_notificationDisable30m = new QAction(tr("Mute for 30 minutes"), this);
      connect(m_notificationDisable30m, SIGNAL(triggered()), this, SLOT(disableNotifications()));
 
-     m_notificationDisable1h = new QAction(tr("hide for 1 hour"), this);
+     m_notificationDisable1h = new QAction(tr("Mute for 1 hour"), this);
      connect(m_notificationDisable1h, SIGNAL(triggered()), this, SLOT(disableNotifications()));
 
-     m_notificationDisable3h = new QAction(tr("hide for 3 hour"), this);
+     m_notificationDisable3h = new QAction(tr("Mute for 3 hour"), this);
      connect(m_notificationDisable3h, SIGNAL(triggered()), this, SLOT(disableNotifications()));
 
-     m_notificationDisable8h = new QAction(tr("hide for 8 hour"), this);
+     m_notificationDisable8h = new QAction(tr("Mute for 8 hour"), this);
      connect(m_notificationDisable8h, SIGNAL(triggered()), this, SLOT(disableNotifications()));
 
      m_notificationDisabled = new QAction(tr("Notifications disabled"), this);

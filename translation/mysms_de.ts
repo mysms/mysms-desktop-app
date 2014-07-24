@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
@@ -47,23 +48,39 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="549"/>
-        <source>hide for 30 minutes</source>
+        <source>Mute for 30 minutes</source>
         <translation>Ausschalten für 30 Minuten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="552"/>
-        <source>hide for 1 hour</source>
+        <source>Mute for 1 hour</source>
         <translation>Ausschalten für 1 Stunde</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="555"/>
-        <source>hide for 3 hour</source>
+        <source>Mute for 3 hour</source>
         <translation>Ausschalten für 3 Stunden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="558"/>
-        <source>hide for 8 hour</source>
+        <source>Mute for 8 hour</source>
         <translation>Ausschalten für 8 Stunden</translation>
+    </message>
+    <message>
+        <source>hide for 30 minutes</source>
+        <translation type="vanished">Ausschalten für 30 Minuten</translation>
+    </message>
+    <message>
+        <source>hide for 1 hour</source>
+        <translation type="vanished">Ausschalten für 1 Stunde</translation>
+    </message>
+    <message>
+        <source>hide for 3 hour</source>
+        <translation type="vanished">Ausschalten für 3 Stunden</translation>
+    </message>
+    <message>
+        <source>hide for 8 hour</source>
+        <translation type="vanished">Ausschalten für 8 Stunden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="561"/>
