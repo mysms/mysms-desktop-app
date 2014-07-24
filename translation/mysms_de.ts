@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
@@ -29,7 +28,7 @@
     <message>
         <location filename="../mainwindow.cpp" line="441"/>
         <source>The program will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray entry.</source>
-        <translation>Das Programm läuft im Infobereich. Zum Beenden des Programms den Eintrag &lt;b&gt;Beenden&lt;/b&gt; im Inhaltsmenü des Infobereichs auswählen.  </translation>
+        <translation>mysms ist im Hintergrund aktiv. Um mysms zu beenden, öffne das mysms Menü im Infobereich und wähle &lt;b&gt;Beenden&lt;/b&gt;.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="540"/>
@@ -49,32 +48,32 @@
     <message>
         <location filename="../mainwindow.cpp" line="549"/>
         <source>hide for 30 minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschalten für 30 Minuten</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="552"/>
         <source>hide for 1 hour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschalten für 1 Stunde</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="555"/>
         <source>hide for 3 hour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschalten für 3 Stunden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="558"/>
         <source>hide for 8 hour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschalten für 8 Stunden</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="561"/>
         <source>Notifications disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Benachrichtigungen deaktiviert</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="575"/>
         <source>Notifications</source>
-        <translation type="unfinished">Benachrichtigungen</translation>
+        <translation>Benachrichtigungen</translation>
     </message>
 </context>
 <context>
@@ -267,22 +266,22 @@
     <message>
         <location filename="../updatedialog.cpp" line="42"/>
         <source>There is a new version of mysms available</source>
-        <translation type="unfinished">Es ist eine neue Version von mysms verfügbar</translation>
+        <translation>Es ist eine neue Version von mysms verfügbar</translation>
     </message>
     <message>
         <location filename="../updatedialog.cpp" line="48"/>
         <source>Install</source>
-        <translation type="unfinished">Installieren</translation>
+        <translation>Installieren</translation>
     </message>
     <message>
         <location filename="../updatedialog.cpp" line="49"/>
         <source>Continue</source>
-        <translation type="unfinished">Fortsetzen</translation>
+        <translation>Weiter</translation>
     </message>
     <message>
         <location filename="../updatedialog.cpp" line="68"/>
         <source>Update version</source>
-        <translation type="unfinished">Version aktualisieren</translation>
+        <translation>Version aktualisieren</translation>
     </message>
 </context>
 <context>
@@ -290,22 +289,22 @@
     <message>
         <location filename="../usersettingsdialog.cpp" line="42"/>
         <source>Common Settings</source>
-        <translation type="unfinished">Allgemeine Einstellungen</translation>
+        <translation>Allgemeine Einstellungen</translation>
     </message>
     <message>
         <location filename="../usersettingsdialog.cpp" line="43"/>
         <source>Notifications</source>
-        <translation type="unfinished">Benachrichtigungen</translation>
+        <translation>Benachrichtigungen</translation>
     </message>
     <message>
         <location filename="../usersettingsdialog.cpp" line="44"/>
         <source>Sounds</source>
-        <translation type="unfinished">Klingelton</translation>
+        <translation>Klingeltöne</translation>
     </message>
     <message>
         <location filename="../usersettingsdialog.cpp" line="58"/>
         <source>Settings</source>
-        <translation type="unfinished">Einstellungen</translation>
+        <translation>Einstellungen</translation>
     </message>
 </context>
 <context>
@@ -313,7 +312,7 @@
     <message>
         <location filename="../webview.cpp" line="78"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei speichern</translation>
     </message>
 </context>
 <context>
