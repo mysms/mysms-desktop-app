@@ -147,6 +147,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
     m_taskBarButton = new QWinTaskbarButton(this);
     m_taskBarButton->setWindow(this->windowHandle());
+
+    QApplication::instance()->installNativeEventFilter(new CustomNativeEventFilter());
 #endif
 
     createActions();
@@ -231,6 +233,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 #endif
     networkAccessManager->setCache(diskCache);
 
+    qDebug() << "default cache size :" << diskCache->cacheSize() << ", max cache size: " << diskCache->maximumCacheSize();
 
     m_networkCookieJar = new NetworkCookieJar();
     networkAccessManager->setCookieJar(m_networkCookieJar);
@@ -429,7 +432,7 @@ bool MainWindow::isWindowClosed()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-     if (m_trayIcon->isVisible())
+     if (!isHidden() && !isMinimized())
      {
          if (!m_settings.contains(SettingCloseInfo))
          {
@@ -659,3 +662,22 @@ QString WebPage::userAgentForUrl(const QUrl &url ) const
 
     return ua;
 }
+
+#if QT_VERSION >= 0x050000 && defined(Q_OS_WIN)
+bool CustomNativeEventFilter::nativeEventFilter(const QByteArray &eventType, void *message, long *result) {
+
+    MSG* msg = (MSG*)(message);
+
+    if (msg->message == WM_QUERYENDSESSION) {
+        MainWindow::instance()->quit();
+        return true;
+    } else if (msg->message == WM_CLOSE && result == 0) {
+        qDebug() << "win event filter - event type: " << eventType << ", message: " << msg->message << ", result: " << result;
+        MainWindow::instance()->quit();
+        return true;
+    }
+
+
+    return false;
+}
+#endif

@@ -345,14 +345,3 @@ void QtSingleApplication::activateWindow()
 
     \obsolete
 */
-
-#ifdef Q_OS_WIN
-bool QtSingleApplication::winEventFilter(MSG* msg, long* result) {
-    if (msg->message == WM_QUERYENDSESSION) {
-        *result = 1;
-        emit quitRequest();
-        return true;
-    }
-    return false;
-}
-#endif

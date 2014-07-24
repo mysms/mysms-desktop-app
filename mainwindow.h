@@ -138,9 +138,14 @@ class WebPage : public QWebPage {
     Q_OBJECT
 protected slots:
     QString userAgentForUrl(const QUrl& url) const;
-
-
-
 };
+
+#if QT_VERSION >= 0x050000 && defined(Q_OS_WIN)
+class CustomNativeEventFilter : public QAbstractNativeEventFilter {
+
+public:
+    virtual bool nativeEventFilter(const QByteArray &eventType, void *message, long *) Q_DECL_OVERRIDE;
+};
+#endif
 
 #endif // MAINWINDOW_H

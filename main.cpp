@@ -77,8 +77,6 @@ int main(int argc, char *argv[])
     else
         w->show();
 
-    QObject::connect(&app, SIGNAL(quitRequest()), w, SLOT(quit()));
-
     w->checkVersion();
 
     int res = app.exec();
