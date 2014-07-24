@@ -199,7 +199,7 @@
     <message>
         <location filename="../usersettingsdialog.cpp" line="168"/>
         <source>Play sound, if ...</source>
-        <translation>Klingelon abspielen, wenn ...</translation>
+        <translation>Klingelton abspielen, wenn ...</translation>
     </message>
     <message>
         <location filename="../usersettingsdialog.cpp" line="170"/>
