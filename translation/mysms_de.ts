@@ -1,15 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="de_DE">
+<TS version="2.1" language="de_DE">
 <context>
     <name>CommonTab</name>
     <message>
-        <location filename="tabdialog.cpp" line="99"/>
+        <location filename="../usersettingsdialog.cpp" line="119"/>
         <source>Run mysms on Windows startup</source>
         <translation>mysms beim Start von Windows ausführen</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="102"/>
+        <location filename="../usersettingsdialog.cpp" line="125"/>
         <source>Show mysms in taskbar</source>
         <translation>mysms in Taskleiste anzeigen</translation>
     </message>
@@ -17,34 +17,64 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="mainwindow.cpp" line="93"/>
+        <location filename="../mainwindow.cpp" line="145"/>
         <source>mysms</source>
         <translation>mysms</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="375"/>
+        <location filename="../mainwindow.cpp" line="440"/>
         <source>Systray</source>
         <translation>Infobereich</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="376"/>
+        <location filename="../mainwindow.cpp" line="441"/>
         <source>The program will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray entry.</source>
         <translation>Das Programm läuft im Infobereich. Zum Beenden des Programms den Eintrag &lt;b&gt;Beenden&lt;/b&gt; im Inhaltsmenü des Infobereichs auswählen.  </translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="465"/>
+        <location filename="../mainwindow.cpp" line="540"/>
         <source>&amp;Quit</source>
         <translation>&amp;Beenden</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="468"/>
+        <location filename="../mainwindow.cpp" line="543"/>
         <source>&amp;Refresh</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="471"/>
+        <location filename="../mainwindow.cpp" line="546"/>
         <source>&amp;Settings</source>
         <translation>&amp;Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="549"/>
+        <source>hide for 30 minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="552"/>
+        <source>hide for 1 hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="555"/>
+        <source>hide for 3 hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="558"/>
+        <source>hide for 8 hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="561"/>
+        <source>Notifications disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="575"/>
+        <source>Notifications</source>
+        <translation type="unfinished">Benachrichtigungen</translation>
     </message>
 </context>
 <context>
@@ -93,17 +123,17 @@
 <context>
     <name>NotificationPopup</name>
     <message>
-        <location filename="notificationpopup.cpp" line="47"/>
+        <location filename="../notificationpopup.cpp" line="69"/>
         <source>Close pop-up</source>
         <translation>Popup schließen</translation>
     </message>
     <message>
-        <location filename="notificationpopup.cpp" line="53"/>
+        <location filename="../notificationpopup.cpp" line="77"/>
         <source>Mark message as read</source>
         <translation>Nachricht als gelesen markieren</translation>
     </message>
     <message>
-        <location filename="notificationpopup.cpp" line="59"/>
+        <location filename="../notificationpopup.cpp" line="85"/>
         <source>Delete message</source>
         <translation>Nachricht löschen</translation>
     </message>
@@ -115,12 +145,12 @@
         <translation type="obsolete">Nachricht(en) empfangen</translation>
     </message>
     <message>
-        <location filename="notificationsummarywidget.cpp" line="38"/>
+        <location filename="../notificationsummarywidget.cpp" line="61"/>
         <source>Compose new message</source>
         <translation>Neue Nachricht erstellen</translation>
     </message>
     <message>
-        <location filename="notificationsummarywidget.cpp" line="44"/>
+        <location filename="../notificationsummarywidget.cpp" line="72"/>
         <source>Close pop-up</source>
         <translation>Popup schließen</translation>
     </message>
@@ -128,12 +158,12 @@
 <context>
     <name>NotificationTab</name>
     <message>
-        <location filename="tabdialog.cpp" line="116"/>
+        <location filename="../usersettingsdialog.cpp" line="139"/>
         <source>Show notifications</source>
         <translation>Benachrichtigungen anzeigen</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="117"/>
+        <location filename="../usersettingsdialog.cpp" line="140"/>
         <source>Privacy Mode - message text is not displayed</source>
         <translation>Privacy Mode - Nachrichtentext wird nicht angezeigt</translation>
     </message>
@@ -168,39 +198,39 @@
 <context>
     <name>SoundTab</name>
     <message>
-        <location filename="tabdialog.cpp" line="150"/>
+        <location filename="../usersettingsdialog.cpp" line="168"/>
         <source>Play sound, if ...</source>
         <translation>Klingelon abspielen, wenn ...</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="152"/>
-        <location filename="tabdialog.cpp" line="227"/>
-        <location filename="tabdialog.cpp" line="244"/>
+        <location filename="../usersettingsdialog.cpp" line="170"/>
+        <location filename="../usersettingsdialog.cpp" line="245"/>
+        <location filename="../usersettingsdialog.cpp" line="262"/>
         <source>Single message</source>
         <translation>Einzelnachricht</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="153"/>
+        <location filename="../usersettingsdialog.cpp" line="171"/>
         <source>Group message</source>
         <translation>Gruppennachricht</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="168"/>
+        <location filename="../usersettingsdialog.cpp" line="186"/>
         <source>Select sound to play</source>
         <translation>Wähle den gewünschten Klingelton</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="192"/>
+        <location filename="../usersettingsdialog.cpp" line="210"/>
         <source>Play this sound</source>
         <translation>Diesen Klingelton abspielen</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="198"/>
+        <location filename="../usersettingsdialog.cpp" line="216"/>
         <source>Play sound only for first unread message</source>
         <translation>Klingelton nur bei erster ungelesener Nachricht abspielen</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="199"/>
+        <location filename="../usersettingsdialog.cpp" line="217"/>
         <source>Ring if application is open</source>
         <translation>Klingeln wenn App geöffnet ist</translation>
     </message>
@@ -208,19 +238,16 @@
 <context>
     <name>TabDialog</name>
     <message>
-        <location filename="tabdialog.cpp" line="21"/>
         <source>Common Settings</source>
-        <translation>Allgemeine Einstellungen</translation>
+        <translation type="vanished">Allgemeine Einstellungen</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="22"/>
         <source>Notifications</source>
-        <translation>Benachrichtigungen</translation>
+        <translation type="vanished">Benachrichtigungen</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="23"/>
         <source>Sounds</source>
-        <translation>Klingelton</translation>
+        <translation type="vanished">Klingelton</translation>
     </message>
     <message>
         <source>Network</source>
@@ -231,32 +258,81 @@
         <translation type="obsolete">Tastenkürzel</translation>
     </message>
     <message>
-        <location filename="tabdialog.cpp" line="37"/>
         <source>Settings</source>
-        <translation>Einstellungen</translation>
+        <translation type="vanished">Einstellungen</translation>
+    </message>
+</context>
+<context>
+    <name>UpdateDialog</name>
+    <message>
+        <location filename="../updatedialog.cpp" line="42"/>
+        <source>There is a new version of mysms available</source>
+        <translation type="unfinished">Es ist eine neue Version von mysms verfügbar</translation>
+    </message>
+    <message>
+        <location filename="../updatedialog.cpp" line="48"/>
+        <source>Install</source>
+        <translation type="unfinished">Installieren</translation>
+    </message>
+    <message>
+        <location filename="../updatedialog.cpp" line="49"/>
+        <source>Continue</source>
+        <translation type="unfinished">Fortsetzen</translation>
+    </message>
+    <message>
+        <location filename="../updatedialog.cpp" line="68"/>
+        <source>Update version</source>
+        <translation type="unfinished">Version aktualisieren</translation>
+    </message>
+</context>
+<context>
+    <name>UserSettingsDialog</name>
+    <message>
+        <location filename="../usersettingsdialog.cpp" line="42"/>
+        <source>Common Settings</source>
+        <translation type="unfinished">Allgemeine Einstellungen</translation>
+    </message>
+    <message>
+        <location filename="../usersettingsdialog.cpp" line="43"/>
+        <source>Notifications</source>
+        <translation type="unfinished">Benachrichtigungen</translation>
+    </message>
+    <message>
+        <location filename="../usersettingsdialog.cpp" line="44"/>
+        <source>Sounds</source>
+        <translation type="unfinished">Klingelton</translation>
+    </message>
+    <message>
+        <location filename="../usersettingsdialog.cpp" line="58"/>
+        <source>Settings</source>
+        <translation type="unfinished">Einstellungen</translation>
+    </message>
+</context>
+<context>
+    <name>WebView</name>
+    <message>
+        <location filename="../webview.cpp" line="78"/>
+        <source>Save File</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>updateDialog</name>
     <message>
-        <location filename="updatedialog.cpp" line="17"/>
         <source>There is a new version of mysms available</source>
-        <translation>Es ist eine neue Version von mysms verfügbar</translation>
+        <translation type="vanished">Es ist eine neue Version von mysms verfügbar</translation>
     </message>
     <message>
-        <location filename="updatedialog.cpp" line="23"/>
         <source>Install</source>
-        <translation>Installieren</translation>
+        <translation type="vanished">Installieren</translation>
     </message>
     <message>
-        <location filename="updatedialog.cpp" line="24"/>
         <source>Continue</source>
-        <translation>Fortsetzen</translation>
+        <translation type="vanished">Fortsetzen</translation>
     </message>
     <message>
-        <location filename="updatedialog.cpp" line="39"/>
         <source>Update version</source>
-        <translation>Version aktualisieren</translation>
+        <translation type="vanished">Version aktualisieren</translation>
     </message>
     <message>
         <source>New version online</source>
