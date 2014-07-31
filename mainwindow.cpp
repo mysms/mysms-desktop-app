@@ -91,6 +91,13 @@ MainWindow::~MainWindow()
     delete m_jsInterface;
     m_jsInterface = NULL;
 
+#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+    if (m_taskBarButton != NULL) {
+        delete m_taskBarButton;
+        m_taskBarButton = NULL;
+    }
+#endif
+
 #ifdef WEBINSPECTOR
     delete m_inspector;
     m_inspector = NULL;
@@ -112,10 +119,12 @@ void MainWindow::updateBadgeCounter(const int badgeCounter)
     m_trayIcon->setIcon(icon);
 
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
-    if (badgeCounter == 0) {
-        m_taskBarButton->clearOverlayIcon();
-    } else {
-        m_taskBarButton->setOverlayIcon(icon);
+    if (m_taskBarButton != NULL) {
+        if (badgeCounter == 0) {
+            m_taskBarButton->clearOverlayIcon();
+        } else {
+            m_taskBarButton->setOverlayIcon(icon);
+        }
     }
 #endif
 }
@@ -145,8 +154,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setWindowTitle(tr("mysms"));
 
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
-    m_taskBarButton = new QWinTaskbarButton(this);
-    m_taskBarButton->setWindow(this->windowHandle());
+    if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
+        m_taskBarButton = new QWinTaskbarButton(this);
+        m_taskBarButton->setWindow(this->windowHandle());
+    } else {
+        m_taskBarButton = NULL;
+    }
 
     QApplication::instance()->installNativeEventFilter(new CustomNativeEventFilter());
 #endif
