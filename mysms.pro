@@ -12,7 +12,7 @@ isEqual(QT_MAJOR_VERSION, 5) {
 
 TARGET = mysms
 TEMPLATE = app
-CONFIG += static
+#CONFIG += static
 SOURCES += networkcookiejar.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -52,7 +52,6 @@ TRANSLATIONS = translation/mysms_de.ts
 
 # Windows resource file
 win32:RC_FILE = mysms.rc
-win32:QMAKE_LFLAGS += -static-libgcc
 macx:ICON = mysms.icns
 
 CONFIG(debug, debug|release) {
