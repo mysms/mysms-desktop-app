@@ -348,7 +348,7 @@
     </message>
     <message>
         <source>Update version</source>
-        <translation type="vanished">Version aktualisieren</translation>
+        <translation type="unfinished">Version aktualisieren</translation>
     </message>
     <message>
         <source>New version online</source>
